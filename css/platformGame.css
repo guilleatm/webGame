@@ -1,0 +1,12 @@
+canvas {
+    border: #5f95e8 6px solid;
+    margin: auto;
+    margin-top: 2em;
+}
+
+@font-face {
+    font-family: 'FerrumExtracondensed';
+    src: url('/assets/fonts/ferrum/eb500a94249a0a07ca76e0687df6c3c8/26630cb45be3d12426e08c884184cfcd/FerrumExtracondensed.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
