@@ -10,6 +10,7 @@ let secondsToGo = DEFAULT_TIME;
 let jumpsToKill = DEFAULT_JUMPS_TO_KILL;
 let playerDeathTimePenalty = DEFAULT_PLAYER_DEATH_TIME_PENALTY;
 
+//misco
 let menuState = {
     preload: loadAssets,
     create: displayScreen
