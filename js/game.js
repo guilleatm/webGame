@@ -9,10 +9,12 @@ let player, controls;
 let platforms;
 let levelConf;
 
+
+const INITIAL_PLAYER_Y = 50, INITIAL_PLATFORM_Y = 200;
 const PLATFORM_GAP = 180;
 const PLATFORM_VEL = 150;
 const PLATFORM_WIDTH = 600 / 8; // El 600 es perq es el game.width
-const DEFAULT_VEL = 210, DESTRUCTION_VEL = 300, ON_PROCESS_LOST_VEL = 12;
+const DEFAULT_VEL = 210, DESTRUCTION_VEL = 500, ON_DESTRUCTION_LOST_VEL = 300;
 
 function preloadGame() {
 	loadSprites();
@@ -37,12 +39,18 @@ function onCollide(player, cube) { // Se crida cuan els objectes ja han xocat
 }
 
 function onProcess(player, cube) { // Se crida antes de que xoquen, per si vols comprovar algo per a anular la colisió
-	console.log(player.body.velocity.y);
+
 	if (player.body.velocity.y > DESTRUCTION_VEL) {
-		player.body.velocity.y -= ON_PROCESS_LOST_VEL;
+		destroyCube(cube);
+		player.body.velocity.y -= ON_DESTRUCTION_LOST_VEL;
 		return false;
 	}
 	return true;
+}
+
+function destroyCube(cube) {
+	cube.visible = false;
+	cube.body.enable = false;
 }
 
 function manageInput() {
@@ -71,7 +79,7 @@ function createGame() {
 
 
 	// Bordes
-	game.world.setBounds(0, 0, levelConf.dimensions.width, levelConf.dimensions.height);
+	game.world.setBounds(0, 0, levelConf.dimensions.width, INITIAL_PLATFORM_Y + levelConf.data.length * PLATFORM_GAP);
 
 	// Fondo
 	let bg = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'bgGame');
@@ -88,13 +96,18 @@ function createGame() {
 function createPlayer() {
 
 	// Jugador
-	player = game.add.sprite(levelConf.dimensions.width / 2, levelConf.dimensions.height / 2, 'collector');
+	player = game.add.sprite(levelConf.dimensions.width / 2, INITIAL_PLAYER_Y, 'player');
 	player.anchor.setTo(0.5, 0.5);
+	player.scale.setTo(0.3, 0.3);
 	game.physics.arcade.enable(player);
 
 	player.body.gravity.y = 250;
 	player.body.collideWorldBounds = true;
 	player.body.bounce.y = 1;
+
+	player.body.checkCollision.up = false;
+	player.body.checkCollision.right = false;
+	player.body.checkCollision.left = false;
 	
 	
 
@@ -121,7 +134,7 @@ function generateLevel() {
 	for (let nFloor = 0; nFloor < levelConf.data.length; nFloor++) {
 		for (let nCube = 0; nCube < levelConf.data[nFloor].length; nCube++) {
 			if (levelConf.data[nFloor][nCube] == 1) {
-				addCube(PLATFORM_WIDTH * nCube, PLATFORM_GAP * nFloor, cubeScale);
+				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale);
 			}
 		}
 	}
@@ -146,7 +159,8 @@ function addCube(x, y, cubeScale) {
 //----PRELOAD--------------------------------------------------------------------------------------
 
 function loadSprites() {
-	game.load.spritesheet('collector', 'assets/imgs/dude.png', 32, 48); // #c
+	game.load.image('player', 'assets/player/bunny1_stand.png'); // #c
+	//game.load.spritesheet('collector', 'assets/imgs/dude.png', 32, 48); // #c
 	game.load.spritesheet('enemy', 'assets/imgs/enemySprite.png', 55, 53, 15);
 }
 
