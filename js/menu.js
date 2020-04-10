@@ -25,8 +25,10 @@ function loadAssets() {
     game.load.image('configButton', 'assets/buttons/settingButton.png');
     game.load.image('playButton', 'assets/buttons/pr1.png');
     game.load.image('bgButtons', 'assets/backgrounds/Elements/PNG/Default/towerAlt.png');
+    game.load.image('mainButton', 'assets/buttons/mainButton.png');
     game.load.image('rabbit', 'assets/player/bunny1_ready.png', 32, 48);
-    game.load.image('sun', 'assets/objects/sun1.png', 150, 1000);
+    game.load.image('sun', 'assets/objects/sun1.png', 142, 148);
+    game.load.image('bubble', 'assets/objects/bubble.png', 32, 48);
 }
 
 function displayScreen() {
@@ -42,10 +44,15 @@ function displayScreen() {
     let rabbit2 = game.add.sprite(game.world.width / 1.5, game.world.height - 110, 'rabbit', 4);
     rabbit2.anchor.setTo(0.5, 0.5);
     rabbit2.scale.setTo(0.5, 0.5);
+    let bubble = game.add.sprite(0, 200, 'bubble', 4);
+    bubble.anchor.setTo(0.5, 0.5);
+    bubble.scale.setTo(0.2, 0.2);
+    
 
     mainTween = game.add.tween(rabbit).to({y: 500}, 700, Phaser.Easing.Linear.None)
                 .to({angle: 360}, 500, Phaser.Easing.Linear.None)
-                .to({y: game.world.height}, 700, Phaser.Easing.Linear.None);
+                .to({y: game.world.height}, 700, Phaser.Easing.Linear.None)
+                .to({alpha: 0}, 200, Phaser.Easing.Linear.None);
 
     mainTween.delay(500);
     mainTween.loop(true);
@@ -57,20 +64,23 @@ function displayScreen() {
 
     downTween2 = game.add.tween(rabbit2).to({alpha: 0}, 500, Phaser.Easing.Linear.None)
                 .to({alpha: 1.0}, 1500, Phaser.Easing.Linear.None);
-
     downTween2.onComplete.add(onDownTweenCompleted, this)
+
+    downTween3 = game.add.tween(bubble).to({x: 500}, 2500, Phaser.Easing.Linear.None)
+                .to({alpha: 0}, 500, Phaser.Easing.Linear.None)
+                .to({x: 0}, 5000, Phaser.Easing.Linear.None)
+                              
     downTween1.start();
 
     let textTitle = 'Falling Rabbit';
     let styleTitle = {
-        font: 'Rammetto One',
+        font: 'Cipitillo',
         fontSize: '22pt',
         fontWeight: 'bold',
         fill: '#b60404'
     };
     let title = game.add.text(game.world.width / 2, game.world.height / 6.5, textTitle, styleTitle);
     title.anchor.setTo(0.5,0.5);
-    //console.log(hero3);
 
     let bgButtons = game.add.image(game.world.width / 2, game.world.height / 1.8, 'bgButtons');
     bgButtons.anchor.setTo(0.5,0.5);
@@ -86,10 +96,15 @@ function displayScreen() {
         btnConfig.anchor.setTo(0.5,0.5);
         btnConfig.scale.setTo(1.2, 1.2);
 
-    btnPlay = game.add.button(game.world.width / 2, game.world.height / 3 + 240,
+    /*btnMain = game.add.button(game.world.width / 2, game.world.height / 3 + 240,
+        'mainButton', onMainButtonPressed);
+        btnMain.anchor.setTo(0.5,0.5);
+        btnMain.scale.setTo(1.2, 1.2);*/
+    
+    btnPlay = game.add.button(game.world.width / 2, game.world.height / 3 + 310,
         'playButton', onPlayButtonPressed);
         btnPlay.anchor.setTo(0.5,0.5);
-        btnPlay.scale.setTo(1.2, 1.2);    
+        btnPlay.scale.setTo(1.2, 1.2);
 }
 
 function onDownTweenCompleted(object, tween) {
@@ -97,6 +112,7 @@ function onDownTweenCompleted(object, tween) {
         downTween2.start();
     else
         downTween1.start();
+        downTween3.start();
 }
 
 function onAboutButtonPressed() {
@@ -106,6 +122,10 @@ function onAboutButtonPressed() {
 function onConfigButtonPressed() {
     game.state.start('playerConf', playerConfState)
 }
+
+/*function onMainButtonPressed() {
+    game.state.start('', )
+}*/
 
 function onPlayButtonPressed() {
     game.state.start('game', gameState)

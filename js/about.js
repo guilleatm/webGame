@@ -6,28 +6,29 @@ let aboutState = {
 let authors;
 
 function loadAboutAssets() {
-    game.load.image('backButton', 'assets/imgs/backButton.png');
+    game.load.image('backButton', 'assets/buttons/backButton.png');
+    game.load.image('bg2', 'assets/backgrounds/backgroundCastles.png');
 }
 
 function showInstructions() {
-    game.add.image(0, 0, 'bg');
+    game.add.image(-20, -100, 'bg2');
 
-    let textTitle = 'Hola que tal (titol)';
+    let textTitle = 'More Screen';
     let styleTitle = {
         font: 'Rammetto One',
-        fontSize: '20pt',
+        fontSize: '25pt',
         fontWeight: 'bold',
         fill: '#b60404'
     };
     game.add.text(75, 25, textTitle, styleTitle);
 
-    let credits = 'Brought to you by...\n';
+    let credits = 'Developed by...\n';
     game.add.text(125, game.world.height / 6, credits, {
         font: 'bold 26pt FerrumExtracondensed',
         fill: '#b60404'
     });
 
-    let msgAuthors = 'THE LECTURERS!!! (in alphabetical order):';
+    let msgAuthors = 'Phaser 13: JSON returns';
     let styleAuthors = {
        	font: 'myFont',
         fontSize: '20pt',
@@ -45,21 +46,19 @@ function showInstructions() {
         fill: '#b60404'
     };
 
-    let author = game.add.text(175, game.world.height / 6 + 110, 'Juan Carlos Amengual Argudo',
+    let author = game.add.text(175, game.world.height / 6 + 110, 'Guillermo Arnau Tamarit',
         styleSingleAuthor);
     authors.add(author);
-    author = game.add.text(175, game.world.height / 6 + 160, 'Antonio Castellanos López',
+    author = game.add.text(175, game.world.height / 6 + 160, 'Óscar Silvestre Payá',
         styleSingleAuthor);
     authors.add(author);
-    author = game.add.text(175, game.world.height / 6 + 210, 'Xavi Traver Roig',
+    author = game.add.text(175, game.world.height / 6 + 210, '??',
         styleSingleAuthor);
     authors.add(author);
 
-    let instructions = 'You will have to collect all of the stars before the timer runs out to ';
-    instructions += 'exit each level. Be aware of the enemies, which can hurt and damage you. ';
-    instructions += 'If you lose your health completely you will die and you will lose time. ';
-    instructions += 'You can kill your oponent by jumping (repeatedly) over its head. ';
-    instructions += 'Get first-aid boxes to recover health. Enjoy the journey and good luck!';
+    let instructions = 'Short description of the game and credits (names of team and team members) ';
+    instructions += '.... ';
+    
 
     let instrucText = game.add.text(0, 0, instructions, {
         font: '14pt Sniglet',
