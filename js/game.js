@@ -6,14 +6,15 @@ let gameState = {
 
 let pathToLevels = "../assets/levels/";
 let player, controls;
-let platforms;
+let platforms, obstacles;
 let levelConf;
+let destroyedPlatformTween
 
 
 const INITIAL_PLAYER_Y = 50, INITIAL_PLATFORM_Y = 200;
-const PLATFORM_GAP = 180;
-const PLATFORM_VEL = 150;
-const PLATFORM_WIDTH = 600 / 8; // El 600 es perq es el game.width
+const PLATFORM_GAP = 300;
+const PLATFORM_VEL = 250;
+const PLATFORM_WIDTH = 600 / 6; // El 600 es perq es el game.width
 const DEFAULT_VEL = 210, DESTRUCTION_VEL = 500, ON_DESTRUCTION_LOST_VEL = 300;
 
 function preloadGame() {
@@ -29,16 +30,17 @@ function preloadGame() {
 function updateGame() {
 
 	manageInput();
+	mangePlatformsPosition()
 
-	game.physics.arcade.collide(player, platforms, onCollide, onProcess, this);
+	game.physics.arcade.collide(player, platforms, onPlatformCollide, onPlatformProcess, this);
+	game.physics.arcade.collide(player, obstacles, onObstacleCollide, onObstacleProcess, this);
 }
 
-function onCollide(player, cube) { // Se crida cuan els objectes ja han xocat
-	//console.log(player.body.velocity.y);
+function onPlatformCollide(player, cube) { // Se crida cuan els objectes ja han xocat
 	player.body.velocity.y = -DEFAULT_VEL;
 }
 
-function onProcess(player, cube) { // Se crida antes de que xoquen, per si vols comprovar algo per a anular la colisió
+function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per si vols comprovar algo per a anular la colisió
 
 	if (player.body.velocity.y > DESTRUCTION_VEL) {
 		destroyCube(cube);
@@ -47,6 +49,12 @@ function onProcess(player, cube) { // Se crida antes de que xoquen, per si vols 
 	}
 	return true;
 }
+
+function onObstacleCollide() {
+	console.log("Muertini");
+}
+
+function onObstacleProcess() {}
 
 function destroyCube(cube) {
 	cube.visible = false;
@@ -59,14 +67,53 @@ function manageInput() {
 	if (controls.right.isDown) { // Dreta
 		for (let i = 0; i < platforms.children.length; i++)
 			platforms.children[i].body.velocity.x = -PLATFORM_VEL;
+
+		for (let i = 0; i < obstacles.children.length; i++)
+			obstacles.children[i].body.velocity.x = -PLATFORM_VEL;
 	} else if (controls.left.isDown) { // Esquerra
 		for (let i = 0; i < platforms.children.length; i++)
 			platforms.children[i].body.velocity.x = PLATFORM_VEL;
+
+		for (let i = 0; i < obstacles.children.length; i++)
+			obstacles.children[i].body.velocity.x = PLATFORM_VEL;
 	} else { // Quet
 		for (let i = 0; i < platforms.children.length; i++)
 			platforms.children[i].body.velocity.x = 0;
+
+		for (let i = 0; i < obstacles.children.length; i++)
+			obstacles.children[i].body.velocity.x = 0;
 	}
 
+
+}
+
+function mangePlatformsPosition() {
+	if (platforms.children[0].body.velocity.x > 0) { // Les plataformes van cap a la dreta
+		for (let i = 0; i < platforms.children.length; i++) {
+			if (platforms.children[i].position.x > 600) {
+				platforms.children[i].position.x -= 7 * PLATFORM_WIDTH;
+			}
+		}
+
+		for(let i = 0; i < obstacles.children.length; i++) {
+			if (obstacles.children[i].position.x > 600) {
+				obstacles.children[i].position.x -= 7 * PLATFORM_WIDTH;
+			}
+		}
+
+	} else if (platforms.children[0].body.velocity.x < 0) { // Les plataformes van cap a la esquerra
+		for (let i = 0; i < platforms.children.length; i++) {
+			if (platforms.children[i].position.x < -PLATFORM_WIDTH) {
+				platforms.children[i].position.x += 7 * PLATFORM_WIDTH;
+			}
+		}
+
+		for(let i = 0; i < obstacles.children.length; i++) {
+			if (obstacles.children[i].position.x < 0) {
+				obstacles.children[i].position.x += 7 * PLATFORM_WIDTH;
+			}
+		}
+	}
 
 }
 
@@ -98,7 +145,7 @@ function createPlayer() {
 	// Jugador
 	player = game.add.sprite(levelConf.dimensions.width / 2, INITIAL_PLAYER_Y, 'player');
 	player.anchor.setTo(0.5, 0.5);
-	player.scale.setTo(0.3, 0.3);
+	player.scale.setTo(0.5, 0.5);
 	game.physics.arcade.enable(player);
 
 	player.body.gravity.y = 250;
@@ -106,8 +153,6 @@ function createPlayer() {
 	player.body.bounce.y = 1;
 
 	player.body.checkCollision.up = false;
-	player.body.checkCollision.right = false;
-	player.body.checkCollision.left = false;
 	
 	
 
@@ -121,26 +166,32 @@ function createPlayer() {
 	controls = game.input.keyboard.createCursorKeys();
 }
 
+
 function generateLevel() {
 	//levelConf.data
 
 	platforms = game.add.group(); // Afegim un grup plataformes
+	obstacles = game.add.group();
 	game.physics.arcade.enable(platforms);
+	game.physics.arcade.enable(obstacles);
 	platforms.enableBody = true; // A ixe grup li habilitem el body per a les colisions
+	obstacles.enableBody = true;
 
 	let cubeScale = PLATFORM_WIDTH / game.cache.getImage('grass').width // widthQueVuic = widthReal * unaEscala // Totes les imatges de ground tenen les mateixes dimensions
 	
 
 	for (let nFloor = 0; nFloor < levelConf.data.length; nFloor++) {
 		for (let nCube = 0; nCube < levelConf.data[nFloor].length; nCube++) {
-			if (levelConf.data[nFloor][nCube] == 1) {
-				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale);
+			if (levelConf.data[nFloor][nCube] == 1) { // Plataforma normal
+				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, false);
+			} else if (levelConf.data[nFloor][nCube] == 2) { // Plataforma en cactus
+				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, true);
 			}
 		}
 	}
 }
 
-function addCube(x, y, cubeScale) {
+function addCube(x, y, cubeScale, obstacle) {
 
 	let cube = platforms.create(x , y, 'grass'); // Cube es una platform, eu pose aixina perq si pose platform se pot confundir en platforms #c
 	cube.scale.setTo(cubeScale, cubeScale);
@@ -150,7 +201,13 @@ function addCube(x, y, cubeScale) {
 	cube.body.checkCollision.right = false;
 	cube.body.checkCollision.left = false;
 
-
+	if (obstacle) {
+		let cactus = obstacles.create(x + PLATFORM_WIDTH / 2 , y, 'cactus');
+		cactus.scale.setTo(cubeScale, cubeScale);
+		cactus.anchor.setTo(0.5, 1);
+		cactus.body.immovable = true;
+		cactus.body.checkCollision.down = false;
+	}
 
 }
 
@@ -167,6 +224,8 @@ function loadSprites() {
 function loadImages() {
 	game.load.image('grass', 'assets/objects/grass.png');
 	game.load.image('grass_broken', 'assets/objects/grass.png');
+	game.load.image('cactus', 'assets/objects/cactus.png');
+
 
 	game.load.image('bgGame', 'assets/imgs/bgPlay.jpg');
 	game.load.image('exit', 'assets/imgs/exit.png');

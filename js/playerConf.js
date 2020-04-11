@@ -6,6 +6,7 @@ let textStyle = {
 };
 
 let playerName;
+let suggestedNames;
 
 let playerConfState = {
 	preload: preloadPlayerConf,
@@ -13,12 +14,9 @@ let playerConfState = {
 };
 
 
-let btnEasy, btnAvg, btnNgtm;
-
 function preloadPlayerConf() {
-	game.load.image('easyButton', 'assets/imgs/easyButton.png');
-	game.load.image('avgButton', 'assets/imgs/averageButton.png');
-	game.load.image('ngtmButton', 'assets/imgs/nightmareButton.png');
+	game.load.image('rndButton', 'assets/imgs/averageButton.png');
+
 }
 
 function createPlayerConf() {
@@ -27,20 +25,26 @@ function createPlayerConf() {
 	let text = game.add.text(game.world.centerX, 80, 'Choose your name:', textStyle); // Text
 	text.anchor.setTo(0.5, 0.5);
 
+	let text2 = game.add.text(game.world.centerX, 500, 'Press Enter for accept', textStyle); // Text
+	text2.anchor.setTo(0.5, 0.5);
+
 	playerName = game.add.text(game.world.centerX, 130, "", textStyle); // Text del nom del jugador
 	playerName.anchor.setTo(0.5, 0.5);
 
-	name1Button = game.add.button(game.world.width / 4, game.world.height * 0.6, 'easyButton', onButtonPressed); // Dr. Ogadicto
-	name1Button.anchor.setTo(0.5, 0.5);
-	name2Button = game.add.button(game.world.width / 2, game.world.height * 0.6, 'avgButton', onButtonPressed); // Juanra Bosucio
-	name2Button.anchor.setTo(0.5, 0.5);
-	name3Button = game.add.button(game.world.width * 3 / 4, game.world.height * 0.6, 'ngtmButton', onButtonPressed); // Kepa Jamecho
-	name3Button.anchor.setTo(0.5, 0.5);
+	rndButton = game.add.button(game.world.width / 2, game.world.height / 2, 'rndButton', onButtonPressed);
+	rndButton.anchor.setTo(0.5, 0.5);
 
 
 	let callbackContext = game.input.keyboard.callbackContext; // callback context, necesari per a definir les callbacks
 	game.input.keyboard.addCallbacks(callbackContext, onDown); // Definim les callbacks (onDown [, onUp, onPress])
 
+
+	suggestedNames = [
+		"Dr. Ogadicto", "Juanra Bosucio", "Kepa Jamecho",
+		"Oskarini", "William Williamson", "Pakito el Chokolatero",
+		"Undefined Undefindini", "JSON Returns", "I Love this Game",
+		"Queremos un 10 :)"
+	]; // Si poses més noms ni ha que modificar el Math.random() (+- linea 68)
 }
 
 
@@ -60,50 +64,10 @@ function onDown() { // Se crida cuan una key està down
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function onButtonPressed(button) {
 
-	if (button === btnEasy) {
-		damage = DEFAULT_DAMAGE;
-		healthAid = DEFAULT_HEALTH;
-		secondsToGo = DEFAULT_TIME;
-		jumpsToKill = DEFAULT_JUMPS_TO_KILL;
-		playerDeathTimePenalty = DEFAULT_PLAYER_DEATH_TIME_PENALTY;
-	} else if (button === btnAvg) {
-		damage = DEFAULT_DAMAGE * 1.5;
-		healthAid = DEFAULT_HEALTH - 2;
-		secondsToGo = DEFAULT_TIME - 90;
-		jumpsToKill = DEFAULT_JUMPS_TO_KILL + 1;
-		playerDeathTimePenalty = DEFAULT_PLAYER_DEATH_TIME_PENALTY + 10;
-	} else if (button === btnNgtm) {
-		damage = DEFAULT_DAMAGE * 2;
-		healthAid = DEFAULT_HEALTH - 5;
-		secondsToGo = DEFAULT_TIME - 150;
-		jumpsToKill = DEFAULT_JUMPS_TO_KILL + 3;
-		playerDeathTimePenalty = DEFAULT_PLAYER_DEATH_TIME_PENALTY + 25;
-	}
-
-	console.log("Dificultad cambiada");
-	game.state.start('menu', menuState);
+	playerName.setText(suggestedNames[Math.floor(Math.random() * 10)]); // Actualitza el text de pantalla
+	
+	//game.state.start('menu', menuState);
 
 }

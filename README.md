@@ -6,6 +6,9 @@
 # Bugs
 
 * Si pulses tecles en cualsevol pantalla se escriu, el keyboard es global.
+* Les fonts no van
+* El main button es més gran que els atres (ni ha que retallar la imatge i que se quede mes o menos en 139x46)
+* El boto de more no va perq el main està per damunt!! Mirar la imatge de main en assets/buttons/
 
 # Pa picar
 

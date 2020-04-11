@@ -1,39 +1,27 @@
-const DEFAULT_DAMAGE = 10;
-const DEFAULT_HEALTH = 10;
-const DEFAULT_TIME = 480;
-const DEFAULT_JUMPS_TO_KILL = 2;
-const DEFAULT_PLAYER_DEATH_TIME_PENALTY = 15;
-
-let damage = DEFAULT_DAMAGE;
-let healthAid = DEFAULT_HEALTH;
-let secondsToGo = DEFAULT_TIME;
-let jumpsToKill = DEFAULT_JUMPS_TO_KILL;
-let playerDeathTimePenalty = DEFAULT_PLAYER_DEATH_TIME_PENALTY;
-
 let menuState = {
     preload: loadAssets,
     create: displayScreen
 };
 
 let mainTween, downTween1, downTween2;
-let btnAbout, btnConfig, btnPlay;
+let btnAbout, btnConfig, btnPlay, btnMain;
 let levelToPlay;
 
 function loadAssets() {
     game.load.image('bg', 'assets/backgrounds/backgroundColorForest.png');
     game.load.image('aboutButton', 'assets/buttons/moreButton.png');
     game.load.image('configButton', 'assets/buttons/settingButton.png');
-    game.load.image('playButton', 'assets/buttons/pr1.png');
+    game.load.image('playButton', 'assets/buttons/playButton.png');
     game.load.image('bgButtons', 'assets/backgrounds/Elements/PNG/Default/towerAlt.png');
     game.load.image('mainButton', 'assets/buttons/mainButton.png');
-    game.load.image('rabbit', 'assets/player/bunny1_ready.png', 32, 48);
-    game.load.image('sun', 'assets/objects/sun1.png', 142, 148);
-    game.load.image('bubble', 'assets/objects/bubble.png', 32, 48);
+    game.load.image('rabbit', 'assets/player/bunny1_ready.png');
+    game.load.image('sun', 'assets/objects/sun1.png');
+    game.load.image('bubble', 'assets/objects/bubble.png');
 }
 
 function displayScreen() {
     levelToPlay = 1;
-    game.input.enabled = true;
+    game.input.enabled = true; // #c
     game.add.image(0,-250, 'bg');
 
     let sun = game.add.sprite(game.world.width - 80, 80, 'sun', 4);
@@ -88,7 +76,7 @@ function displayScreen() {
 
     btnAbout = game.add.button(game.world.width / 2, game.world.height / 3 + 120,
         'aboutButton', onAboutButtonPressed);
-        btnAbout.anchor.setTo(0.5,0.5);
+		btnAbout.anchor.setTo(0.5,0.5);
         btnAbout.scale.setTo(1.2, 1.2);
 
     btnConfig = game.add.button(game.world.width / 2, game.world.height / 3 + 180,
@@ -96,10 +84,10 @@ function displayScreen() {
         btnConfig.anchor.setTo(0.5,0.5);
         btnConfig.scale.setTo(1.2, 1.2);
 
-    /*btnMain = game.add.button(game.world.width / 2, game.world.height / 3 + 240,
+    btnMain = game.add.button(game.world.width / 2, game.world.height / 3 + 297, // #c --> 3 + 240
         'mainButton', onMainButtonPressed);
         btnMain.anchor.setTo(0.5,0.5);
-        btnMain.scale.setTo(1.2, 1.2);*/
+        btnMain.scale.setTo(0.34, 0.34); // #c --> 1.2, 1.2
     
     btnPlay = game.add.button(game.world.width / 2, game.world.height / 3 + 310,
         'playButton', onPlayButtonPressed);
@@ -108,11 +96,12 @@ function displayScreen() {
 }
 
 function onDownTweenCompleted(object, tween) {
-    if (tween === downTween1)
+    if (tween === downTween1) {
         downTween2.start();
-    else
+	} else {
         downTween1.start();
         downTween3.start();
+	}
 }
 
 function onAboutButtonPressed() {
@@ -123,9 +112,10 @@ function onConfigButtonPressed() {
     game.state.start('playerConf', playerConfState)
 }
 
-/*function onMainButtonPressed() {
-    game.state.start('', )
-}*/
+function onMainButtonPressed() {
+	console.log("Soc el maaaaain, soc puto enormeee");
+    game.state.start('playerConf', playerConfState)
+}
 
 function onPlayButtonPressed() {
     game.state.start('game', gameState)
