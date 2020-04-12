@@ -15,7 +15,8 @@ const INITIAL_PLAYER_Y = 50, INITIAL_PLATFORM_Y = 200;
 const PLATFORM_GAP = 300;
 const PLATFORM_VEL = 250;
 const PLATFORM_WIDTH = 600 / 6; // El 600 es perq es el game.width
-const DEFAULT_VEL = 210, DESTRUCTION_VEL = 500, ON_DESTRUCTION_LOST_VEL = 300;
+const PLAYER_GRAVITY = 1000;
+const DEFAULT_VEL = PLAYER_GRAVITY * 0.55, DESTRUCTION_VEL = PLAYER_GRAVITY * 2, ON_DESTRUCTION_LOST_VEL = PLAYER_GRAVITY * 1.2;
 
 function preloadGame() {
 	loadSprites();
@@ -51,7 +52,7 @@ function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per 
 }
 
 function onObstacleCollide() {
-	console.log("Muertini");
+	console.log("Muertinii");
 }
 
 function onObstacleProcess() {}
@@ -148,7 +149,7 @@ function createPlayer() {
 	player.scale.setTo(0.5, 0.5);
 	game.physics.arcade.enable(player);
 
-	player.body.gravity.y = 250;
+	player.body.gravity.y = PLAYER_GRAVITY;
 	player.body.collideWorldBounds = true;
 	player.body.bounce.y = 1;
 
@@ -217,32 +218,35 @@ function addCube(x, y, cubeScale, obstacle) {
 
 function loadSprites() {
 	game.load.image('player', 'assets/player/bunny1_stand.png'); // #c
-	//game.load.spritesheet('collector', 'assets/imgs/dude.png', 32, 48); // #c
-	game.load.spritesheet('enemy', 'assets/imgs/enemySprite.png', 55, 53, 15);
+
+	// game.load.spritesheet('collector', 'assets/imgs/dude.png', 32, 48); // #c
+	// game.load.spritesheet('enemy', 'assets/imgs/enemySprite.png', 55, 53, 15);
 }
 
 function loadImages() {
 	game.load.image('grass', 'assets/objects/grass.png');
 	game.load.image('grass_broken', 'assets/objects/grass.png');
+	game.load.image('stone', 'assets/objects/stone.png');
 	game.load.image('cactus', 'assets/objects/cactus.png');
 
 
+
 	game.load.image('bgGame', 'assets/imgs/bgPlay.jpg');
-	game.load.image('exit', 'assets/imgs/exit.png');
-	game.load.image('star', 'assets/imgs/star.png');
-	game.load.image('aid', 'assets/imgs/firstaid.png');
-	game.load.image('healthHolder', 'assets/imgs/health_holder.png');
-	game.load.image('healthBar', 'assets/imgs/health_bar.png');
-	game.load.image('heart', 'assets/imgs/heart.png');
+	// game.load.image('exit', 'assets/imgs/exit.png');
+	// game.load.image('star', 'assets/imgs/star.png');
+	// game.load.image('aid', 'assets/imgs/firstaid.png');
+	// game.load.image('healthHolder', 'assets/imgs/health_holder.png');
+	// game.load.image('healthBar', 'assets/imgs/health_bar.png');
+	// game.load.image('heart', 'assets/imgs/heart.png');
 }
 
 function loadSounds() {
-	game.load.audio('damaged', 'assets/snds/hurt1.wav');
-	game.load.audio('collectstar', 'assets/snds/cling.wav');
-	game.load.audio('getaid', 'assets/snds/wooo.wav');
-	game.load.audio('hitenemy', 'assets/snds/snare.wav');
-	game.load.audio('outoftime', 'assets/snds/klaxon4-dry.wav');
-	game.load.audio('levelpassed', 'assets/snds/success.wav');
+	// game.load.audio('damaged', 'assets/snds/hurt1.wav');
+	// game.load.audio('collectstar', 'assets/snds/cling.wav');
+	// game.load.audio('getaid', 'assets/snds/wooo.wav');
+	// game.load.audio('hitenemy', 'assets/snds/snare.wav');
+	// game.load.audio('outoftime', 'assets/snds/klaxon4-dry.wav');
+	// game.load.audio('levelpassed', 'assets/snds/success.wav');
 }
 
 function loadLevel(level) {
