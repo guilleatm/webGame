@@ -63,7 +63,7 @@ function displayScreen() {
     let textTitle = 'Falling Rabbit';
     let styleTitle = {
         font: 'Cipitillo',
-        fontSize: '22pt',
+        fontSize: '35pt',
         fontWeight: 'bold',
         fill: '#b60404'
     };
