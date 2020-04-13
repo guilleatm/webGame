@@ -15,12 +15,12 @@ let playerConfState = {
 
 
 function preloadPlayerConf() {
-	game.load.image('rndButton', 'assets/imgs/averageButton.png');
-
+	game.load.image('rndButton', 'assets/buttons/rndButton.png');
+	game.load.image('bg2', 'assets/backgrounds/backgroundCastles.png');
 }
 
 function createPlayerConf() {
-	game.add.image(0, 0, 'bg'); // Imatge de fondo
+	game.add.image(-20, -100, 'bg2'); // Imatge de fondo
 
 	let text = game.add.text(game.world.centerX, 80, 'Choose your name:', textStyle); // Text
 	text.anchor.setTo(0.5, 0.5);
@@ -33,6 +33,7 @@ function createPlayerConf() {
 
 	rndButton = game.add.button(game.world.width / 2, game.world.height / 2, 'rndButton', onButtonPressed);
 	rndButton.anchor.setTo(0.5, 0.5);
+	rndButton.scale.setTo(0.6, 0.6);
 
 
 	let callbackContext = game.input.keyboard.callbackContext; // callback context, necesari per a definir les callbacks

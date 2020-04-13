@@ -84,10 +84,10 @@ function displayScreen() {
         btnConfig.anchor.setTo(0.5,0.5);
         btnConfig.scale.setTo(1.2, 1.2);
 
-    btnMain = game.add.button(game.world.width / 2, game.world.height / 3 + 297, // #c --> 3 + 240
+    btnMain = game.add.button(game.world.width / 2, game.world.height / 3 + 240, 
         'mainButton', onMainButtonPressed);
         btnMain.anchor.setTo(0.5,0.5);
-        btnMain.scale.setTo(0.34, 0.34); // #c --> 1.2, 1.2
+        btnMain.scale.setTo(1.2, 1.2); 
     
     btnPlay = game.add.button(game.world.width / 2, game.world.height / 3 + 310,
         'playButton', onPlayButtonPressed);
@@ -109,11 +109,10 @@ function onAboutButtonPressed() {
 }
 
 function onConfigButtonPressed() {
-    game.state.start('playerConf', playerConfState)
+    game.state.start('instructions', instructionsState)
 }
 
 function onMainButtonPressed() {
-	console.log("Soc el maaaaain, soc puto enormeee");
     game.state.start('playerConf', playerConfState)
 }
 

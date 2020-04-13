@@ -24,8 +24,10 @@ function startGame() {
     game.state.add('menu', menuState);
     // About Screen
     game.state.add('about', aboutState);
-    // Player configuration Screen
-    game.state.add('playerConf', playerConfState);
+    // Instructions Screen
+    game.state.add('instructions', instructionsState);
+     // Player configuration Screen
+     game.state.add('playerConf', playerConfState);
     // Game Screen
     game.state.add('game', gameState);
 
