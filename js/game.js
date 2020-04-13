@@ -231,7 +231,7 @@ function loadImages() {
 
 
 
-	game.load.image('bgGame', 'assets/imgs/bgPlay.jpg');
+	game.load.image('bgGame', 'assets/backgrounds/infiniteBg.jpg');
 	// game.load.image('exit', 'assets/imgs/exit.png');
 	// game.load.image('star', 'assets/imgs/star.png');
 	// game.load.image('aid', 'assets/imgs/firstaid.png');

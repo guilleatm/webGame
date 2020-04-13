@@ -73,6 +73,7 @@ function showInstructions() {
     let btnPlay = game.add.button(game.world.width / 2, game.world.height - 60, 'backButton',
         onBackButtonPressed);
     btnPlay.anchor.setTo(0.5, 0.5);
+    btnPlay.scale.setTo(1.2, 1.2);
 }
 
 function onBackButtonPressed() {
