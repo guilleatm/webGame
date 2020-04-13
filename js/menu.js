@@ -4,6 +4,7 @@ let menuState = {
 };
 
 let mainTween, downTween1, downTween2;
+let rabbit;
 let btnAbout, btnConfig, btnPlay, btnMain;
 let levelToPlay;
 
@@ -23,28 +24,21 @@ function displayScreen() {
     levelToPlay = 1;
     game.input.enabled = true; // #c
     game.add.image(0,-250, 'bg');
-
-    let sun = game.add.sprite(game.world.width - 80, 80, 'sun', 4);
-    sun.anchor.setTo(0.5, 0.5);
-    let rabbit = game.add.sprite(25, game.world.height , 'rabbit', 4);
+	
+	rabbit = game.add.sprite(0, game.world.height, 'rabbit');
     rabbit.anchor.setTo(0.5, 0.5);
     rabbit.scale.setTo(0.5, 0.5);
-    let rabbit2 = game.add.sprite(game.world.width / 1.5, game.world.height - 110, 'rabbit', 4);
+    let sun = game.add.sprite(game.world.width - 80, 80, 'sun');
+    sun.anchor.setTo(0.5, 0.5);
+    let rabbit2 = game.add.sprite(game.world.width / 1.5, game.world.height - 110, 'rabbit');
     rabbit2.anchor.setTo(0.5, 0.5);
     rabbit2.scale.setTo(0.5, 0.5);
-    let bubble = game.add.sprite(0, 200, 'bubble', 4);
+    let bubble = game.add.sprite(0, 200, 'bubble');
     bubble.anchor.setTo(0.5, 0.5);
     bubble.scale.setTo(0.2, 0.2);
     
-
-    mainTween = game.add.tween(rabbit).to({y: 500}, 700, Phaser.Easing.Linear.None)
-                .to({angle: 360}, 500, Phaser.Easing.Linear.None)
-                .to({y: game.world.height}, 700, Phaser.Easing.Linear.None)
-                .to({alpha: 0}, 200, Phaser.Easing.Linear.None);
-
-    mainTween.delay(500);
-    mainTween.loop(true);
-    mainTween.start();
+	createRandomTween(mainTween, rabbit);
+    
 
     downTween1 = game.add.tween(sun.scale).to({x: 1.8,y: 1.8}, 2000, Phaser.Easing.Cubic.Out)
                 .to({x: 1,y: 1}, 2000, Phaser.Easing.Cubic.Out);
@@ -95,6 +89,26 @@ function displayScreen() {
         btnPlay.scale.setTo(1.2, 1.2);
 }
 
+function createRandomTween(myTween, sprite) {
+
+	let xPos = Math.random() * game.world.width;
+
+	sprite.position.x = xPos;
+
+	if (myTween != undefined) {
+		myTween.remove();
+	}
+	sprite.alpha = 1;
+	myTween = game.add.tween(sprite).to({x: xPos, y: 500}, 700, Phaser.Easing.Linear.None)
+        .to({angle: 360}, 500, Phaser.Easing.Linear.None)
+        .to({y: game.world.height}, 700, Phaser.Easing.Linear.None)
+        .to({alpha: 0}, 200, Phaser.Easing.Linear.None);
+	myTween.onComplete.add(onMainTweenCompleteed, this);
+
+    myTween.delay(500);
+    myTween.start();
+}
+
 function onDownTweenCompleted(object, tween) {
     if (tween === downTween1) {
         downTween2.start();
@@ -102,6 +116,10 @@ function onDownTweenCompleted(object, tween) {
         downTween1.start();
         downTween3.start();
 	}
+}
+
+function onMainTweenCompleteed(object, tween) {
+	createRandomTween(mainTween, rabbit);
 }
 
 function onAboutButtonPressed() {
