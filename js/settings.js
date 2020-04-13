@@ -21,7 +21,7 @@ function showInstructions() {
     game.add.text(75, 25, textTitle, styleTitle);
 
     let instructions = 'It will have some text with the instructions to play the game';
-    instructions += '.... ';
+    instructions += '.... '; // WOW
     
 
     let instrucText = game.add.text(0, 0, instructions, {

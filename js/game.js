@@ -8,10 +8,11 @@ let pathToLevels = "../assets/levels/";
 let player, controls;
 let platforms, obstacles;
 let levelConf;
-let destroyedPlatformTween
+let remainingFloors;
+let remainingFloorsText;
 
 
-const INITIAL_PLAYER_Y = 50, INITIAL_PLATFORM_Y = 200;
+const INITIAL_PLAYER_Y = 50, INITIAL_PLATFORM_Y = 400;
 const PLATFORM_GAP = 300;
 const PLATFORM_VEL = 250;
 const PLATFORM_WIDTH = 600 / 6; // El 600 es perq es el game.width
@@ -39,9 +40,18 @@ function updateGame() {
 
 function onPlatformCollide(player, cube) { // Se crida cuan els objectes ja han xocat
 	player.body.velocity.y = -DEFAULT_VEL;
+
+	remainingFloors = levelConf.data.length - calculateCurrentFloor(cube.position.y) - 1;	
+	updateText();
+
+	if (cube.type == 'stone')
+		win();
 }
 
 function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per si vols comprovar algo per a anular la colisió
+
+	if (cube.type == 'stone')
+		return true;
 
 	if (player.body.velocity.y > DESTRUCTION_VEL) {
 		destroyCube(cube);
@@ -53,6 +63,10 @@ function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per 
 
 function onObstacleCollide() {
 	console.log("Muertinii");
+}
+
+function win() {
+	console.log("Enhorabona, has passat el nivell")
 }
 
 function onObstacleProcess() {}
@@ -92,32 +106,39 @@ function mangePlatformsPosition() {
 	if (platforms.children[0].body.velocity.x > 0) { // Les plataformes van cap a la dreta
 		for (let i = 0; i < platforms.children.length; i++) {
 			if (platforms.children[i].position.x > 600) {
-				platforms.children[i].position.x -= 7 * PLATFORM_WIDTH;
+				platforms.children[i].position.x -= 8 * PLATFORM_WIDTH;
 			}
 		}
 
 		for(let i = 0; i < obstacles.children.length; i++) {
 			if (obstacles.children[i].position.x > 600) {
-				obstacles.children[i].position.x -= 7 * PLATFORM_WIDTH;
+				obstacles.children[i].position.x -= 8 * PLATFORM_WIDTH;
 			}
 		}
 
 	} else if (platforms.children[0].body.velocity.x < 0) { // Les plataformes van cap a la esquerra
 		for (let i = 0; i < platforms.children.length; i++) {
 			if (platforms.children[i].position.x < -PLATFORM_WIDTH) {
-				platforms.children[i].position.x += 7 * PLATFORM_WIDTH;
+				platforms.children[i].position.x += 8 * PLATFORM_WIDTH;
 			}
 		}
 
 		for(let i = 0; i < obstacles.children.length; i++) {
 			if (obstacles.children[i].position.x < 0) {
-				obstacles.children[i].position.x += 7 * PLATFORM_WIDTH;
+				obstacles.children[i].position.x += 8 * PLATFORM_WIDTH;
 			}
 		}
 	}
 
 }
 
+function calculateCurrentFloor(platformY) {
+	return (platformY - INITIAL_PLATFORM_Y) / PLATFORM_GAP // INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor = platformY
+}
+
+function updateText() {
+	remainingFloorsText.setText(remainingFloors);
+}
 
 //----CREATE--------------------------------------------------------------------------------------
 
@@ -133,6 +154,8 @@ function createGame() {
 	let bg = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'bgGame');
 	bg.scrollFactorX = 0.7;
 	bg.scrollFactorY = 0.7;
+
+	createText();
 
 	createPlayer();
 
@@ -152,6 +175,7 @@ function createPlayer() {
 	player.body.gravity.y = PLAYER_GRAVITY;
 	player.body.collideWorldBounds = true;
 	player.body.bounce.y = 1;
+	player.body.bounce.x = 0;
 
 	player.body.checkCollision.up = false;
 	
@@ -184,23 +208,26 @@ function generateLevel() {
 	for (let nFloor = 0; nFloor < levelConf.data.length; nFloor++) {
 		for (let nCube = 0; nCube < levelConf.data[nFloor].length; nCube++) {
 			if (levelConf.data[nFloor][nCube] == 1) { // Plataforma normal
-				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, false);
+				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'grass', false);
 			} else if (levelConf.data[nFloor][nCube] == 2) { // Plataforma en cactus
-				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, true);
+				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'grass', true);
+			} else if (levelConf.data[nFloor][nCube] == 3) { // Plataforma final
+				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'stone', false);
 			}
 		}
 	}
 }
 
-function addCube(x, y, cubeScale, obstacle) {
+function addCube(x, y, cubeScale, platformType ,obstacle) {
 
-	let cube = platforms.create(x , y, 'grass'); // Cube es una platform, eu pose aixina perq si pose platform se pot confundir en platforms #c
+	let cube = platforms.create(x , y, platformType); // Cube es una platform, eu pose aixina perq si pose platform se pot confundir en platforms #c
 	cube.scale.setTo(cubeScale, cubeScale);
 	//cube.anchor.setTo(0.5, 0.5);
 	cube.body.immovable = true;
 	cube.body.checkCollision.down = false;
 	cube.body.checkCollision.right = false;
 	cube.body.checkCollision.left = false;
+	cube.type = platformType;
 
 	if (obstacle) {
 		let cactus = obstacles.create(x + PLATFORM_WIDTH / 2 , y, 'cactus');
@@ -212,7 +239,23 @@ function addCube(x, y, cubeScale, obstacle) {
 
 }
 
+function createText() {
 
+    let onGameTextStyle = {
+        font: 'Rammetto One',
+        fontSize: '25pt',
+        fontWeight: 'bold',
+        fill: '#b60404',
+    };
+
+    let nameText = game.add.text(0, 0, playerName.text, onGameTextStyle);
+	nameText.fixedToCamera = true;
+	nameText.cameraOffset.setTo(25, 25);
+
+	remainingFloorsText = game.add.text(0, 0, levelConf.data.length - 1, onGameTextStyle);
+	remainingFloorsText.fixedToCamera = true;
+	remainingFloorsText.cameraOffset.setTo(game.world.width - 75, 25);
+}
 
 //----PRELOAD--------------------------------------------------------------------------------------
 

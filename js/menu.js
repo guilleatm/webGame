@@ -3,6 +3,8 @@ let menuState = {
     create: displayScreen
 };
 
+let playerName;
+
 let mainTween, downTween1, downTween2;
 let rabbit;
 let btnAbout, btnConfig, btnPlay, btnMain;
@@ -135,5 +137,6 @@ function onMainButtonPressed() {
 }
 
 function onPlayButtonPressed() {
-    game.state.start('game', gameState)
+	if (playerName != undefined && playerName.text.length > 0) 
+    	game.state.start('game', gameState)
 }

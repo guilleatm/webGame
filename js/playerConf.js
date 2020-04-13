@@ -5,7 +5,6 @@ let textStyle = {
 	fill: '#b60404'
 };
 
-let playerName;
 let suggestedNames;
 
 let playerConfState = {

@@ -24,8 +24,8 @@
 * HUD in-play screens (both for level 1 and 2):
 * Top-left HUD:
 * Life bar.
-* Player’s nickname.
+* Player’s nickname. OK
 * Bottom-right HUD:
-* Number of remaining platforms to reach the floor and, hence, to be able to complete the level.
+* Number of remaining platforms to reach the floor and, hence, to be able to complete the level. OK
 * Icon of the powerup in effect, if any.
 * Current level.
