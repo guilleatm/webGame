@@ -66,7 +66,7 @@ function onObstacleCollide() {
 }
 
 function win() {
-	level++;
+	levelToPlay++;
 	game.state.start('game', gameState);
 
 }
