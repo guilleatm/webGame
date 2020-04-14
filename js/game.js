@@ -18,6 +18,7 @@ const PLATFORM_VEL = 250;
 const PLATFORM_WIDTH = 600 / 6; // El 600 es perq es el game.width
 const PLAYER_GRAVITY = 1000;
 const DEFAULT_VEL = PLAYER_GRAVITY * 0.55, DESTRUCTION_VEL = PLAYER_GRAVITY * 2, ON_DESTRUCTION_LOST_VEL = PLAYER_GRAVITY * 1.2;
+const NUM_LEVELS = 6;
 
 function preloadGame() {
 	loadSprites();
@@ -62,12 +63,20 @@ function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per 
 }
 
 function onObstacleCollide() {
-	console.log("Muertinii");
+	if (lifes > 1) {
+		lifes--;
+		game.state.start('game', gameState);
+	} else {
+		
+	}
 }
 
 function win() {
-	levelToPlay++;
-	game.state.start('game', gameState);
+	if (levelToPlay++ <= NUM_LEVELS) {
+		game.state.start('game', gameState);
+	} else {
+		game.state.start('levelSelector', levelSelectorState);
+	}
 
 }
 
@@ -157,11 +166,13 @@ function createGame() {
 	bg.scrollFactorX = 0.7;
 	bg.scrollFactorY = 0.7;
 
-	createText();
-
+	
 	createPlayer();
 
 	generateLevel();
+
+	createText();
+	createHUD();
 	
 
 }
@@ -249,14 +260,29 @@ function createText() {
         fontWeight: 'bold',
         fill: '#b60404',
     };
-
+	// Player name
     let nameText = game.add.text(0, 0, playerName.text, onGameTextStyle);
 	nameText.fixedToCamera = true;
 	nameText.cameraOffset.setTo(25, 25);
 
+	// Remaining floors
 	remainingFloorsText = game.add.text(0, 0, levelConf.data.length - 1, onGameTextStyle);
 	remainingFloorsText.fixedToCamera = true;
-	remainingFloorsText.cameraOffset.setTo(game.world.width - 75, 25);
+	remainingFloorsText.cameraOffset.setTo(25, game.height - 75);
+
+	// Level
+	let levelText = game.add.text(0, 0, 'lvl: ' + levelToPlay, onGameTextStyle);
+	levelText.fixedToCamera = true;
+	levelText.cameraOffset.setTo(game.width - 140, game.height - 75);
+}
+
+function createHUD() {
+	
+	for (let i = 0; i < lifes; i++) {
+		let lifeSprite = game.add.sprite(game.world.width - 80 - i * 10, 25, 'life');
+		lifeSprite.fixedToCamera = true;
+	}
+
 }
 
 //----PRELOAD--------------------------------------------------------------------------------------
@@ -273,6 +299,7 @@ function loadImages() {
 	game.load.image('grass_broken', 'assets/objects/grass.png');
 	game.load.image('stone', 'assets/objects/stone.png');
 	game.load.image('cactus', 'assets/objects/cactus.png');
+	game.load.image('life', 'assets/objects/life.png');
 
 
 

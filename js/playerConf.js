@@ -45,6 +45,10 @@ function createPlayerConf() {
 		"Undefined Undefindini", "JSON Returns", "I Love this Game",
 		"Queremos un 10 :)"
 	]; // Si poses més noms ni ha que modificar el Math.random() (+- linea 68)
+
+	if (playerName != undefined) {
+		playerName.setText(playerName.text); // Actualitza el text de pantalla
+	}
 }
 
 

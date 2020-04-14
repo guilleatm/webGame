@@ -21,11 +21,11 @@
 
 # Falta
 
-* HUD in-play screens (both for level 1 and 2):
-* Top-left HUD:
-* Life bar.
+* HUD in-play screens (both for level 1 and 2) OK
+* Top-left HUD: OK
+* Life bar. OK
 * Player’s nickname. OK
-* Bottom-right HUD:
+* Bottom-right HUD OK
 * Number of remaining platforms to reach the floor and, hence, to be able to complete the level. OK
-* Icon of the powerup in effect, if any.
-* Current level.
+* Icon of the powerup in effect, if any. ??
+* Current level. OK

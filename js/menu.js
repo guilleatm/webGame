@@ -8,7 +8,7 @@ let playerName;
 let mainTween, downTween1, downTween2;
 let rabbit;
 let btnAbout, btnConfig, btnPlay, btnMain;
-let levelToPlay;
+let levelToPlay, lifes = 3;
 
 function loadAssets() {
     game.load.image('bg', 'assets/backgrounds/backgroundColorForest.png');
@@ -131,7 +131,8 @@ function onMainTweenCompleteed(object, tween) {
 }
 
 function onLvlSelectorButtonPressed() {
-	game.state.start('levelSelector', levelSelectorState)
+	if (playerName != undefined && playerName.text.length > 0) 
+		game.state.start('levelSelector', levelSelectorState)
 }
 
 function onAboutButtonPressed() {
