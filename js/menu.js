@@ -17,6 +17,7 @@ function loadAssets() {
     game.load.image('playButton', 'assets/buttons/playButton.png');
     game.load.image('bgButtons', 'assets/backgrounds/Elements/PNG/Default/towerAlt.png');
     game.load.image('mainButton', 'assets/buttons/mainButton.png');
+    game.load.image('lvlButton', 'assets/buttons/lvlSelector.png');
     game.load.image('rabbit', 'assets/player/bunny1_ready.png');
     game.load.image('sun', 'assets/objects/sun1.png');
     game.load.image('bubble', 'assets/objects/bubble.png');
@@ -70,6 +71,11 @@ function displayScreen() {
     bgButtons.anchor.setTo(0.5,0.5);
     bgButtons.scale.setTo(2.9, 1.7);
 
+    btnLvl = game.add.button(game.world.width / 2, game.world.height / 3 + 53,
+        'lvlButton', onLvlSelectorButtonPressed);
+        btnLvl.anchor.setTo(0.5,0.5);
+        btnLvl.scale.setTo(0.6, 0.6);
+
     btnAbout = game.add.button(game.world.width / 2, game.world.height / 3 + 120,
         'aboutButton', onAboutButtonPressed);
 		btnAbout.anchor.setTo(0.5,0.5);
@@ -88,7 +94,7 @@ function displayScreen() {
     btnPlay = game.add.button(game.world.width / 2, game.world.height / 3 + 310,
         'playButton', onPlayButtonPressed);
         btnPlay.anchor.setTo(0.5,0.5);
-        btnPlay.scale.setTo(1.2, 1.2);
+        btnPlay.scale.setTo(1.2, 1.2);   
 }
 
 function createRandomTween(myTween, sprite) {
@@ -103,11 +109,11 @@ function createRandomTween(myTween, sprite) {
 	sprite.alpha = 1;
 	myTween = game.add.tween(sprite).to({x: xPos, y: 500}, 700, Phaser.Easing.Linear.None)
         .to({angle: 360}, 500, Phaser.Easing.Linear.None)
-        .to({y: game.world.height}, 700, Phaser.Easing.Linear.None)
+        .to({y: game.world.height + 100}, 700, Phaser.Easing.Linear.None)
         .to({alpha: 0}, 200, Phaser.Easing.Linear.None);
 	myTween.onComplete.add(onMainTweenCompleteed, this);
 
-    myTween.delay(500);
+    myTween.delay(1500);
     myTween.start();
 }
 
@@ -122,6 +128,10 @@ function onDownTweenCompleted(object, tween) {
 
 function onMainTweenCompleteed(object, tween) {
 	createRandomTween(mainTween, rabbit);
+}
+
+function onLvlSelectorButtonPressed() {
+	game.state.start('levelSelector', levelSelectorState)
 }
 
 function onAboutButtonPressed() {
