@@ -66,7 +66,9 @@ function onObstacleCollide() {
 }
 
 function win() {
-	console.log("Enhorabona, has passat el nivell")
+	level++;
+	game.state.start('game', gameState);
+
 }
 
 function onObstacleProcess() {}

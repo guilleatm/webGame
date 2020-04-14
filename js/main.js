@@ -26,11 +26,14 @@ function startGame() {
     game.state.add('about', aboutState);
     // Instructions Screen
     game.state.add('instructions', instructionsState);
-     // Player configuration Screen
-     game.state.add('playerConf', playerConfState);
+    // Player configuration Screen
+    game.state.add('playerConf', playerConfState);
     // Game Screen
     game.state.add('game', gameState);
+	// Selector de nivells
+	game.state.add('levelSelector', levelSelectorState);
 
-	game.state.start('menu', menuState)
+
+	game.state.start('menu', menuState);
 
 }
