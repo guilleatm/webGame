@@ -31,7 +31,9 @@ function startGame() {
     // Game Screen
     game.state.add('game', gameState);
 	// Selector de nivells
-	game.state.add('levelSelector', levelSelectorState);
+    game.state.add('levelSelector', levelSelectorState);
+    // Game Over
+	game.state.add('endScreen', endScreenState);
 
 
 	game.state.start('menu', menuState);

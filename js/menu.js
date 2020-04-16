@@ -149,5 +149,5 @@ function onMainButtonPressed() {
 
 function onPlayButtonPressed() {
 	if (playerName != undefined && playerName.text.length > 0) 
-    	game.state.start('game', gameState)
+    	game.state.start('endScreen', endScreenState)
 }
