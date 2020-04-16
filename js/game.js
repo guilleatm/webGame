@@ -321,7 +321,7 @@ function createText() {
 function createHUD() {
 	
 	for (let i = 0; i < lifes; i++) {
-		let lifeSprite = lifeSprites.create(game.world.width - 80 - i * 10, 25, 'life');
+		let lifeSprite = lifeSprites.create(game.width - 80 - i * 10, 25, 'life');
 		lifeSprite.fixedToCamera = true;
 	}
 

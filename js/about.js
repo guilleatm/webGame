@@ -23,7 +23,7 @@ function showInstructions() {
     game.add.text(75, 25, textTitle, styleTitle);
 
     let credits = 'Developed by...\n';
-    game.add.text(125, game.world.height / 6, credits, {
+    game.add.text(125, game.height / 6, credits, {
         font: 'bold 26pt FerrumExtracondensed',
         fill: '#b60404'
     });
@@ -35,7 +35,7 @@ function showInstructions() {
         fontWeight: 'bold',
         fill: '#b60404'
     };
-    game.add.text(125, game.world.height / 6 + 60, msgAuthors, styleAuthors);
+    game.add.text(125, game.height / 6 + 60, msgAuthors, styleAuthors);
 
     authors = game.add.group();
     authors.inputEnableChildren = true;
@@ -46,13 +46,13 @@ function showInstructions() {
         fill: '#b60404'
     };
 
-    let author = game.add.text(175, game.world.height / 6 + 110, 'Guillermo Arnau Tamarit',
+    let author = game.add.text(175, game.height / 6 + 110, 'Guillermo Arnau Tamarit',
         styleSingleAuthor);
     authors.add(author);
-    author = game.add.text(175, game.world.height / 6 + 160, 'Óscar Silvestre Payá',
+    author = game.add.text(175, game.height / 6 + 160, 'Óscar Silvestre Payá',
         styleSingleAuthor);
     authors.add(author);
-    author = game.add.text(175, game.world.height / 6 + 210, '??',
+    author = game.add.text(175, game.height / 6 + 210, '??',
         styleSingleAuthor);
     authors.add(author);
 
@@ -64,21 +64,18 @@ function showInstructions() {
         font: '14pt Sniglet',
         fill: '#b60404'
     });
-    instrucText.setTextBounds(30, game.world.height - 170, game.world.width - 60);
+    instrucText.setTextBounds(30, game.height - 170, game.width - 60);
     instrucText.boundsAlignH = 'center';
     instrucText.boundsAlignV = 'middle';
     instrucText.wordWrap = true;
-    instrucText.wordWrapWidth = game.world.width - 60;
+    instrucText.wordWrapWidth = game.width - 60;
 
-    let btnPlay = game.add.button(game.world.width / 2, game.world.height - 60, 'backButton',
+    let btnPlay = game.add.button(game.width / 2, game.height - 60, 'backButton',
         onBackButtonPressed);
     btnPlay.anchor.setTo(0.5, 0.5);
     btnPlay.scale.setTo(1.2, 1.2);
 }
 
-function onBackButtonPressed() {
-    game.state.start('menu');
-}
 
 function overText(text, pointer) {
     text.fill = '#0e0eb3';

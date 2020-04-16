@@ -47,7 +47,7 @@ function createPlayerConf() {
 	rndButton.anchor.setTo(0.5, 0.5);
 	rndButton.scale.setTo(0.6, 0.6);
 
-	let btnBack = game.add.button(game.world.width / 2, game.world.height - 60, 'backButton', backMain);
+	let btnBack = game.add.button(game.width / 2, game.height - 60, 'backButton', backMain);
 	btnBack.anchor.setTo(0.5, 0.5);
 	btnBack.scale.setTo(1.2, 1.2);
 

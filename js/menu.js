@@ -1,6 +1,6 @@
 let menuState = {
-    preload: loadAssets,
-    create: displayScreen
+    preload: preloadMenu,
+    create: createMenu
 };
 
 let playerName;
@@ -10,7 +10,7 @@ let rabbit;
 let btnAbout, btnConfig, btnPlay, btnMain;
 let levelToPlay;
 
-function loadAssets() {
+function preloadMenu() {
     game.load.image('bg', 'assets/backgrounds/backgroundColorForest.png');
     game.load.image('aboutButton', 'assets/buttons/moreButton.png');
     game.load.image('configButton', 'assets/buttons/settingButton.png');
@@ -23,17 +23,17 @@ function loadAssets() {
     game.load.image('bubble', 'assets/objects/bubble.png');
 }
 
-function displayScreen() {
+function createMenu() {
     levelToPlay = 1;
     game.input.enabled = true; // #c
     game.add.image(0,-250, 'bg');
 	
-	rabbit = game.add.sprite(0, game.world.height, 'rabbit');
+	rabbit = game.add.sprite(0, game.height, 'rabbit');
     rabbit.anchor.setTo(0.5, 0.5);
     rabbit.scale.setTo(0.5, 0.5);
-    let sun = game.add.sprite(game.world.width - 80, 80, 'sun');
+    let sun = game.add.sprite(game.width - 80, 80, 'sun');
     sun.anchor.setTo(0.5, 0.5);
-    let rabbit2 = game.add.sprite(game.world.width / 1.5, game.world.height - 110, 'rabbit');
+    let rabbit2 = game.add.sprite(game.width / 1.5, game.height - 110, 'rabbit');
     rabbit2.anchor.setTo(0.5, 0.5);
     rabbit2.scale.setTo(0.5, 0.5);
     let bubble = game.add.sprite(0, 200, 'bubble');
@@ -64,34 +64,34 @@ function displayScreen() {
         fontWeight: 'bold',
         fill: '#b60404'
     };
-    let title = game.add.text(game.world.width / 2, game.world.height / 6.5, textTitle, styleTitle);
+    let title = game.add.text(game.width / 2, game.height / 6.5, textTitle, styleTitle);
     title.anchor.setTo(0.5,0.5);
 
-    let bgButtons = game.add.image(game.world.width / 2, game.world.height / 1.8, 'bgButtons');
+    let bgButtons = game.add.image(game.width / 2, game.height / 1.8, 'bgButtons');
     bgButtons.anchor.setTo(0.5,0.5);
     bgButtons.scale.setTo(2.9, 1.7);
 
-    btnLvl = game.add.button(game.world.width / 2, game.world.height / 3 + 53,
+    btnLvl = game.add.button(game.width / 2, game.height / 3 + 53,
         'lvlButton', onLvlSelectorButtonPressed);
         btnLvl.anchor.setTo(0.5,0.5);
         btnLvl.scale.setTo(0.6, 0.6);
 
-    btnAbout = game.add.button(game.world.width / 2, game.world.height / 3 + 120,
+    btnAbout = game.add.button(game.width / 2, game.height / 3 + 120,
         'aboutButton', onAboutButtonPressed);
 		btnAbout.anchor.setTo(0.5,0.5);
         btnAbout.scale.setTo(1.2, 1.2);
 
-    btnConfig = game.add.button(game.world.width / 2, game.world.height / 3 + 180,
+    btnConfig = game.add.button(game.width / 2, game.height / 3 + 180,
         'configButton', onConfigButtonPressed);
         btnConfig.anchor.setTo(0.5,0.5);
         btnConfig.scale.setTo(1.2, 1.2);
 
-    btnMain = game.add.button(game.world.width / 2, game.world.height / 3 + 240, 
+    btnMain = game.add.button(game.width / 2, game.height / 3 + 240, 
         'mainButton', onMainButtonPressed);
         btnMain.anchor.setTo(0.5,0.5);
         btnMain.scale.setTo(1.2, 1.2); 
     
-    btnPlay = game.add.button(game.world.width / 2, game.world.height / 3 + 310,
+    btnPlay = game.add.button(game.width / 2, game.height / 3 + 310,
         'playButton', onPlayButtonPressed);
         btnPlay.anchor.setTo(0.5,0.5);
         btnPlay.scale.setTo(1.2, 1.2);   
@@ -99,7 +99,7 @@ function displayScreen() {
 
 function createRandomTween(myTween, sprite) {
 
-	let xPos = Math.random() * game.world.width;
+	let xPos = Math.random() * game.width;
 
 	sprite.position.x = xPos;
 
@@ -109,7 +109,7 @@ function createRandomTween(myTween, sprite) {
 	sprite.alpha = 1;
 	myTween = game.add.tween(sprite).to({x: xPos, y: 500}, 700, Phaser.Easing.Linear.None)
         .to({angle: 360}, 500, Phaser.Easing.Linear.None)
-        .to({y: game.world.height + 100}, 700, Phaser.Easing.Linear.None)
+        .to({y: game.height + 100}, 700, Phaser.Easing.Linear.None)
         .to({alpha: 0}, 200, Phaser.Easing.Linear.None);
 	myTween.onComplete.add(onMainTweenCompleteed, this);
 
@@ -132,22 +132,26 @@ function onMainTweenCompleteed(object, tween) {
 
 function onLvlSelectorButtonPressed() {
 	if (playerName != undefined && playerName.text.length > 0) 
-		game.state.start('levelSelector')
+		game.state.start('levelSelector', levelSelectorState)
 }
 
 function onAboutButtonPressed() {
-	game.state.start('about')
+	game.state.start('about', aboutState)
 }
 
 function onConfigButtonPressed() {
-    game.state.start('instructions')
+    game.state.start('instructions', instructionsState)
 }
 
 function onMainButtonPressed() {
-    game.state.start('playerConf')
+    game.state.start('playerConf', playerConfState)
 }
 
 function onPlayButtonPressed() {
 	if (playerName != undefined && playerName.text.length > 0) 
-    	game.state.start('game')
+    	game.state.start('game', gameState)
+}
+
+function onBackButtonPressed() {
+    game.state.start('menu');
 }
