@@ -11,7 +11,7 @@ let levelConf;
 let remainingFloors;
 let remainingFloorsText;
 let currentPowerup;
-
+let lifes = 3, lifeSprites;
 
 const INITIAL_PLAYER_Y = 50, INITIAL_PLATFORM_Y = 400;
 const PLATFORM_GAP = 300;
@@ -79,12 +79,13 @@ function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per 
 	return true;
 }
 
-function onObstacleCollide() {
+function onObstacleCollide(player, obstacle) {
 	if (lifes > 1) {
-		lifes--;
-		game.state.start('game', gameState);
+		player.body.velocity.x = 0;
+		destroyObstacle(obstacle);
+		lifeSprites.children[--lifes].destroy();
 	} else {
-		
+		game.state.start('endScreen', endScreenState);
 	}
 }
 
@@ -242,6 +243,8 @@ function generateLevel() {
 	platforms.enableBody = true; // A ixe grup li habilitem el body per a les colisions
 	obstacles.enableBody = true;
 
+	lifeSprites = game.add.group();
+
 	let cubeScale = PLATFORM_WIDTH / game.cache.getImage('grass').width // widthQueVuic = widthReal * unaEscala // Totes les imatges de ground tenen les mateixes dimensions
 	
 
@@ -318,7 +321,7 @@ function createText() {
 function createHUD() {
 	
 	for (let i = 0; i < lifes; i++) {
-		let lifeSprite = game.add.sprite(game.world.width - 80 - i * 10, 25, 'life');
+		let lifeSprite = lifeSprites.create(game.world.width - 80 - i * 10, 25, 'life');
 		lifeSprite.fixedToCamera = true;
 	}
 

@@ -8,7 +8,7 @@ let playerName;
 let mainTween, downTween1, downTween2;
 let rabbit;
 let btnAbout, btnConfig, btnPlay, btnMain;
-let levelToPlay, lifes = 3;
+let levelToPlay;
 
 function loadAssets() {
     game.load.image('bg', 'assets/backgrounds/backgroundColorForest.png');
