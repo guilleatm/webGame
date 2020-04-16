@@ -132,22 +132,22 @@ function onMainTweenCompleteed(object, tween) {
 
 function onLvlSelectorButtonPressed() {
 	if (playerName != undefined && playerName.text.length > 0) 
-		game.state.start('levelSelector', levelSelectorState)
+		game.state.start('levelSelector')
 }
 
 function onAboutButtonPressed() {
-	game.state.start('about', aboutState)
+	game.state.start('about')
 }
 
 function onConfigButtonPressed() {
-    game.state.start('instructions', instructionsState)
+    game.state.start('instructions')
 }
 
 function onMainButtonPressed() {
-    game.state.start('playerConf', playerConfState)
+    game.state.start('playerConf')
 }
 
 function onPlayButtonPressed() {
 	if (playerName != undefined && playerName.text.length > 0) 
-    	game.state.start('endScreen', endScreenState)
+    	game.state.start('game')
 }

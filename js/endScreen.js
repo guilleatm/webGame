@@ -38,7 +38,13 @@ function showEndInstructions() {
     instrucText.wordWrap = true;
     instrucText.wordWrapWidth = game.world.width - 60;
 
-    let btnPlay = game.add.button(game.world.width / 2, game.world.height - 60, 'restartButton',
+	let infoText = game.add.text(game.width / 2, 250, 'You fell ' + (levelConf.data.length - remainingFloors) + ' floors, you need ' + remainingFloors + ' more.', {
+        font: '14pt Sniglet',
+        fill: '#b60404'
+    });
+	infoText.anchor.setTo(0.5, 0.5);
+
+    let btnPlay = game.add.button(game.width / 2, game.height - 60, 'restartButton',
         onBackButtonPressed);
     btnPlay.anchor.setTo(0.5, 0.5);
     btnPlay.scale.setTo(1.2, 1.2);
