@@ -10,6 +10,7 @@ let platforms, obstacles;
 let levelConf;
 let remainingFloors;
 let remainingFloorsText;
+let currentPowerup;
 
 
 const INITIAL_PLAYER_Y = 50, INITIAL_PLATFORM_Y = 400;
@@ -17,8 +18,9 @@ const PLATFORM_GAP = 300;
 const PLATFORM_VEL = 250;
 const PLATFORM_WIDTH = 600 / 6; // El 600 es perq es el game.width
 const PLAYER_GRAVITY = 1000;
-const DEFAULT_VEL = PLAYER_GRAVITY * 0.55, DESTRUCTION_VEL = PLAYER_GRAVITY * 2, ON_DESTRUCTION_LOST_VEL = PLAYER_GRAVITY * 1.2;
+const DEFAULT_VEL = PLAYER_GRAVITY * 0.55, DESTRUCTION_VEL = DEFAULT_VEL * 2.5, ON_DESTRUCTION_LOST_VEL = DEFAULT_VEL * 1.2;
 const NUM_LEVELS = 6;
+const POWERUP_DURATION = 4;
 
 function preloadGame() {
 	loadSprites();
@@ -45,6 +47,11 @@ function onPlatformCollide(player, cube) { // Se crida cuan els objectes ja han 
 	remainingFloors = levelConf.data.length - calculateCurrentFloor(cube.position.y) - 1;	
 	updateText();
 
+	if (cube.type == 'grass_carrot') {
+		cube.children[0].kill();
+		currentPowerup = POWERUP_DURATION;
+	}
+
 	if (cube.type == 'stone')
 		win();
 }
@@ -53,6 +60,16 @@ function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per 
 
 	if (cube.type == 'stone')
 		return true;
+	else if (currentPowerup > 0) {
+		destroyCube(cube);
+		player.body.velocity.y = 100;
+		currentPowerup--;
+		return false;
+	}
+	else if (cube.type == 'grass_broken') {
+		destroyCube(cube);
+		return true;
+	}
 
 	if (player.body.velocity.y > DESTRUCTION_VEL) {
 		destroyCube(cube);
@@ -80,7 +97,17 @@ function win() {
 
 }
 
-function onObstacleProcess() {}
+function onObstacleProcess(player, obstacle) {
+	if (currentPowerup > 0) {
+		destroyObstacle(obstacle)
+		return false;
+	}
+}
+
+function destroyObstacle(obstacle) {
+	obstacle.visible = false;
+	obstacle.body.enable = false;
+}
 
 function destroyCube(cube) {
 	cube.visible = false;
@@ -221,17 +248,21 @@ function generateLevel() {
 	for (let nFloor = 0; nFloor < levelConf.data.length; nFloor++) {
 		for (let nCube = 0; nCube < levelConf.data[nFloor].length; nCube++) {
 			if (levelConf.data[nFloor][nCube] == 1) { // Plataforma normal
-				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'grass', false);
+				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'grass');
 			} else if (levelConf.data[nFloor][nCube] == 2) { // Plataforma en cactus
-				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'grass', true);
+				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'grass', 'cactus');
 			} else if (levelConf.data[nFloor][nCube] == 3) { // Plataforma final
-				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'stone', false);
+				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'stone');
+			} else if (levelConf.data[nFloor][nCube] == 4) {
+				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'grass_broken')
+			} else if (levelConf.data[nFloor][nCube] == 5) {
+				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'grass', 'carrot')
 			}
 		}
 	}
 }
 
-function addCube(x, y, cubeScale, platformType ,obstacle) {
+function addCube(x, y, cubeScale, platformType, extra) {
 
 	let cube = platforms.create(x , y, platformType); // Cube es una platform, eu pose aixina perq si pose platform se pot confundir en platforms #c
 	cube.scale.setTo(cubeScale, cubeScale);
@@ -242,12 +273,20 @@ function addCube(x, y, cubeScale, platformType ,obstacle) {
 	cube.body.checkCollision.left = false;
 	cube.type = platformType;
 
-	if (obstacle) {
+	if (extra == 'cactus') {
 		let cactus = obstacles.create(x + PLATFORM_WIDTH / 2 , y, 'cactus');
 		cactus.scale.setTo(cubeScale, cubeScale);
 		cactus.anchor.setTo(0.5, 1);
 		cactus.body.immovable = true;
 		cactus.body.checkCollision.down = false;
+		cube.type += '_cactus';
+	} else if (extra == 'carrot') {
+		let carrot = game.make.sprite(PLATFORM_WIDTH * 0.8, -10, 'carrot');
+		carrot.anchor.setTo(0.5, 1);
+
+		cube.addChild(carrot);
+
+		cube.type += '_carrot';
 	}
 
 }
@@ -296,10 +335,11 @@ function loadSprites() {
 
 function loadImages() {
 	game.load.image('grass', 'assets/objects/grass.png');
-	game.load.image('grass_broken', 'assets/objects/grass.png');
+	game.load.image('grass_broken', 'assets/objects/grass_broken.png');
 	game.load.image('stone', 'assets/objects/stone.png');
 	game.load.image('cactus', 'assets/objects/cactus.png');
 	game.load.image('life', 'assets/objects/life.png');
+	game.load.image('carrot', 'assets/objects/carrot.png')
 
 
 
