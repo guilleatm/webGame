@@ -6,6 +6,7 @@ let endScreenState = {
 function loadEndAssets() {
     game.load.image('restartButton', 'assets/buttons/restartButton.png');
     game.load.image('gameOver', 'assets/backgrounds/gameOver.jpg');
+    game.load.spritesheet('explosion', 'assets/player/spritesheetExplosion.png', 192 , 192, 7);
 }
 
 function showEndInstructions() {
@@ -13,14 +14,6 @@ function showEndInstructions() {
     gameOverImage.anchor.setTo(0.5, 0.5);
     gameOverImage.scale.setTo(0.6, 0.7);
 
-    let textTitle = 'Instructions Screen';
-    let styleTitle = {
-        font: 'Rammetto One',
-        fontSize: '25pt',
-        fontWeight: 'bold',
-        fill: '#b60404'
-    };
-    game.add.text(75, 25, textTitle, styleTitle);
 
     let instructions = 'Play again by pressing the “S” key';
     instructions += '.... '; 
@@ -40,6 +33,10 @@ function showEndInstructions() {
         onBackButtonPressed);
     btnPlay.anchor.setTo(0.5, 0.5);
     btnPlay.scale.setTo(1.2, 1.2);
+
+    this.explosion = game.add.sprite(100, 150, 'explosion');
+    this.explosion.animations.add('bye', [0,1,2,3,4], 12, true);
+    this.explosion.animations.play('bye');
 }
 
 function onBackButtonPressed() {
