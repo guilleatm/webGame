@@ -16,6 +16,14 @@ function showEndInstructions() {
     gameOverImage.anchor.setTo(0.5, 0.5);
     gameOverImage.scale.setTo(0.6, 0.7);
 
+    let textTitle = 'Instructions Screen';
+    let styleTitle = {
+        font: 'Rammetto One',
+        fontSize: '25pt',
+        fontWeight: 'bold',
+        fill: '#b60404'
+    };
+    game.add.text(75, 25, textTitle, styleTitle);
 
     let instructions = 'Play again by pressing the “S” key';
     instructions += '.... '; 
@@ -41,6 +49,17 @@ function showEndInstructions() {
         onBackButtonPressed);
     btnPlay.anchor.setTo(0.5, 0.5);
     btnPlay.scale.setTo(1.2, 1.2);
+
+	game.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
+
+	game.input.keyboard.addCallbacks(this, endScreenOnDown);
+}
+
+function updateCounter() {
+	counter++;
+	if (counter >= 15) {
+		game.state.start('menu');
+	}
 
     this.explosion = game.add.sprite(100, 150, 'explosion');
     this.explosion.animations.add('bye', [0,1,2,3,4], 12, true);
