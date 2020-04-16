@@ -1,3 +1,5 @@
+let counter = 0;
+
 let endScreenState = {
     preload: loadEndAssets,
     create: showEndInstructions
@@ -40,8 +42,27 @@ function showEndInstructions() {
         onBackButtonPressed);
     btnPlay.anchor.setTo(0.5, 0.5);
     btnPlay.scale.setTo(1.2, 1.2);
+
+	game.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
+
+	game.input.keyboard.addCallbacks(this, endScreenOnDown);
+}
+
+function updateCounter() {
+	counter++;
+	if (counter >= 15) {
+		game.state.start('menu');
+	}
 }
 
 function onBackButtonPressed() {
     game.state.start('menu');
+}
+
+
+function endScreenOnDown() { // Se crida cuan una key està down
+
+	if (game.input.keyboard.event.key == "s" || game.input.keyboard.event.key == "S") {
+		game.state.start('game');
+	}
 }
