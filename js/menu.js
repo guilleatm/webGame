@@ -28,7 +28,7 @@ function createMenu() {
     game.input.enabled = true; // #c
     game.add.image(0,-250, 'bg');
 	
-	rabbit = game.add.sprite(0, game.height, 'rabbit');
+	rabbit = game.add.sprite(0, game.height, 'rabbit'); //image o sprite?
     rabbit.anchor.setTo(0.5, 0.5);
     rabbit.scale.setTo(0.5, 0.5);
     let sun = game.add.sprite(game.width - 80, 80, 'sun');
@@ -42,7 +42,6 @@ function createMenu() {
     
 	createRandomTween(mainTween, rabbit);
     
-
     downTween1 = game.add.tween(sun.scale).to({x: 1.8,y: 1.8}, 2000, Phaser.Easing.Cubic.Out)
                 .to({x: 1,y: 1}, 2000, Phaser.Easing.Cubic.Out);
     downTween1.onComplete.add(onDownTweenCompleted, this);

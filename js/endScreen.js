@@ -7,66 +7,83 @@ let endScreenState = {
 
 function preloadEndScreen() {
     game.load.image('restartButton', 'assets/buttons/restartButton.png');
-    game.load.image('gameOver', 'assets/backgrounds/gameOver.jpg');
+    game.load.image('endScreen', 'assets/backgrounds/endScreen.png');
+    game.load.image('moon', 'assets/backgrounds/gameOver/moon.png');
+    game.load.image('gameOver', 'assets/backgrounds/gameOver/gameOver.png');
+    game.load.image('bunnyhurt', 'assets/backgrounds/gameOver/bunny2_hurt.png');
     game.load.spritesheet('explosion', 'assets/player/spritesheetExplosion.png', 192 , 192, 7);
 }
 
 function createEndScreen() {
-    let gameOverImage = game.add.image(game.width / 2, game.height / 2, 'gameOver');
-    gameOverImage.anchor.setTo(0.5, 0.5);
-    gameOverImage.scale.setTo(0.6, 0.7);
+    let endScreen = game.add.image(game.width / 2, game.height / 2, 'endScreen');
+    endScreen.anchor.setTo(0.5, 0.5);
+    endScreen.scale.setTo(0.6, 0.9);
 
 	let btnPlay = game.add.button(game.width / 2, game.height - 60, 'restartButton',
         onBackButtonPressed);
     btnPlay.anchor.setTo(0.5, 0.5);
     btnPlay.scale.setTo(1.2, 1.2);
 
-    let textTitle = 'Instructions Screen';
-    let styleTitle = {
-        font: 'Rammetto One',
-        fontSize: '25pt',
-        fontWeight: 'bold',
-        fill: '#b60404'
-    };
-    game.add.text(75, 25, textTitle, styleTitle);
+    let moon = game.add.image(game.width / 2, game.height / 2 - 163, 'moon');
+    moon.anchor.setTo(0.5, 0.5);
+    moon.scale.setTo(1.75, 1.75);
 
-    let instructions = 'Play again by pressing the “S” key';
-    instructions += '.... '; 
+    let gameOver = game.add.image(game.width / 2 + 7, game.height / 2 - 145, 'gameOver');
+    gameOver.anchor.setTo(0.5, 0.5);
+    gameOver.scale.setTo(0.4, 0.4);
+
+    let bunnyhurt = game.add.image(game.width / 2, game.height - 197, 'bunnyhurt');
+    bunnyhurt.anchor.setTo(0.5, 0.5);
+    bunnyhurt.scale.setTo(0.5, 0.5);
+
+    gameOverTween = game.add.tween(gameOver).to({alpha: 0}, 700, Phaser.Easing.Linear.None)
+                .to({alpha: 1.0}, 700, Phaser.Easing.Linear.None);
+    gameOverTween.delay(1000);
+    gameOverTween.loop(true);
+    gameOverTween.start();
+
+    explosionTween = game.add.tween(bunnyhurt).to({alpha: 0}, 100, Phaser.Easing.Linear.None);
+            explosionTween.delay(3300);
+            explosionTween.start();
     
-
+    let instructions = 'Play again by pressing the “S” key';
+    
     let instrucText = game.add.text(0, 0, instructions, {
         font: '14pt Sniglet',
-        fill: '#b60404'
+        fill: '#790625'
     });
-    instrucText.setTextBounds(30, 200, game.width - 60);
+    instrucText.setTextBounds(30, 577, game.width - 60);
     instrucText.boundsAlignH = 'center';
     instrucText.boundsAlignV = 'middle';
     instrucText.wordWrap = true;
     instrucText.wordWrapWidth = game.width - 60;
 
-	let infoText = game.add.text(game.width / 2, 250, 'You fell ' + (levelConf.data.length - remainingFloors) + ' floors, you need ' + remainingFloors + ' more.', {
+	let infoText = game.add.text(game.width / 2, 500, 'You fell ' + (levelConf.data.length - remainingFloors) + ' floors, you need ' + remainingFloors + ' more.', {
         font: '14pt Sniglet',
-        fill: '#b60404'
+        fill: '#790625'
     });
 	infoText.anchor.setTo(0.5, 0.5);
 
 	game.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
-
 	game.input.keyboard.addCallbacks(this, endScreenOnDown);
 
-	let explosion = game.add.sprite(100, 150, 'explosion');
-    explosion.animations.add('bye', [0,1,2,3,4], 12, true);
-    explosion.animations.play('bye');
+    
 }
 
 function updateCounter() {
-	counter++;
+    counter++;
+    if(counter == 3){
+        let explosion = game.add.sprite(game.width / 2, game.height - 197, 'explosion');
+        explosion.animations.add('bye', [0,1,2,3,4], 4, true);
+        explosion.animations.play('bye');
+        explosion.anchor.setTo(0.5, 0.5);
+        explosion.scale.setTo(0.8, 0.8);
+        //explosion.animations.stop(null, true);
+    }
 	if (counter >= 15) {
 		game.state.start('menu', menuState);
 	}
 }
-
-
 
 function endScreenOnDown() { // Se crida cuan una key està down
 
