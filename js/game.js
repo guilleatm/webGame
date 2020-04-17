@@ -11,7 +11,7 @@ let levelConf;
 let remainingFloors;
 let remainingFloorsText;
 let currentPowerup;
-let lifes = 3, lifeSprites;
+let lifeSprites;
 
 const INITIAL_PLAYER_Y = 50, INITIAL_PLATFORM_Y = 400;
 const PLATFORM_GAP = 300;
@@ -91,6 +91,7 @@ function onObstacleCollide(player, obstacle) {
 
 function win() {
 	if (levelToPlay++ <= NUM_LEVELS) {
+		lifes = 3
 		game.state.start('game', gameState);
 	} else {
 		game.state.start('levelSelector', levelSelectorState);

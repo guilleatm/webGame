@@ -88,6 +88,7 @@ function updateCounter() {
 function endScreenOnDown() { // Se crida cuan una key està down
 
 	if (game.input.keyboard.event.key == "s" || game.input.keyboard.event.key == "S") {
+		lifes = 3;
 		game.state.start('game', gameState);
 	}
 }

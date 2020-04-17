@@ -9,6 +9,7 @@ let mainTween, downTween1, downTween2;
 let rabbit;
 let btnAbout, btnConfig, btnPlay, btnMain;
 let levelToPlay;
+let lifes = 3;
 
 function preloadMenu() {
     game.load.image('bg', 'assets/backgrounds/backgroundColorForest.png');
@@ -25,7 +26,7 @@ function preloadMenu() {
 
 function createMenu() {
     levelToPlay = 1;
-    game.input.enabled = true; // #c
+    //game.input.enabled = true; // #c
     game.add.image(0,-250, 'bg');
 	
 	rabbit = game.add.sprite(0, game.height, 'rabbit'); //image o sprite?
@@ -131,24 +132,26 @@ function onMainTweenCompleteed(object, tween) {
 
 function onLvlSelectorButtonPressed() {
 	if (playerName != undefined && playerName.text.length > 0) 
-		game.state.start('levelSelector', levelSelectorState)
+		game.state.start('levelSelector', levelSelectorState);
 }
 
 function onAboutButtonPressed() {
-	game.state.start('about', aboutState)
+	game.state.start('about', aboutState);
 }
 
 function onConfigButtonPressed() {
-    game.state.start('instructions', instructionsState)
+    game.state.start('instructions', instructionsState);
 }
 
 function onMainButtonPressed() {
-    game.state.start('playerConf', playerConfState)
+    game.state.start('playerConf', playerConfState);
 }
 
 function onPlayButtonPressed() {
-	if (playerName != undefined && playerName.text.length > 0) 
-    	game.state.start('game', gameState)
+	if (playerName != undefined && playerName.text.length > 0) {
+		lifes = 3;
+		game.state.start('game', gameState);
+	}
 }
 
 function onBackButtonPressed() {
