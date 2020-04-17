@@ -11,7 +11,7 @@ function preloadEndScreen() {
     game.load.image('moon', 'assets/backgrounds/gameOver/moon.png');
     game.load.image('gameOver', 'assets/backgrounds/gameOver/gameOver.png');
     game.load.image('bunnyhurt', 'assets/backgrounds/gameOver/bunny2_hurt.png');
-    game.load.spritesheet('explosion', 'assets/player/spritesheetExplosion.png', 192 , 192, 7);
+    game.load.spritesheet('explosion', 'assets/player/spritesheetExplosion.png', 192 , 192, 8); // Soles ni han 7 imatges, carregue 8 perque com a ultima agafa una imatge sense res i va be pa quan acava la animació
 }
 
 function createEndScreen() {
@@ -74,7 +74,7 @@ function updateCounter() {
     counter++;
     if(counter == 3){
         let explosion = game.add.sprite(game.width / 2, game.height - 197, 'explosion');
-        explosion.animations.add('bye', [0,1,2,3,4], 4, true);
+        explosion.animations.add('bye', [0,1,2,3,4,5,6,7], 6, false); // El frame 7 no te res, es per a que no se quede el fum.
         explosion.animations.play('bye');
         explosion.anchor.setTo(0.5, 0.5);
         explosion.scale.setTo(0.8, 0.8);
