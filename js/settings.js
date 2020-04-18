@@ -13,20 +13,21 @@ function showInstructions() {
 
     let textTitle = 'Instructions Screen';
     let styleTitle = {
-        font: 'Rammetto One',
-        fontSize: '25pt',
+        font: 'Brightly',
+        fontSize: '40pt',
         fontWeight: 'bold',
         fill: '#b60404'
     };
-    game.add.text(75, 25, textTitle, styleTitle);
+    let title = game.add.text(game.width / 2, 70, textTitle, styleTitle);
+    title.anchor.setTo(0.5,0.5);
 
     let instructions = 'It will have some text with the instructions to play the game';
-    instructions += '.... '; // WOW
+    instructions += '.... '; 
     
 
     let instrucText = game.add.text(0, 0, instructions, {
         font: '14pt Sniglet',
-        fill: '#b60404'
+        fill: '#000000'
     });
     instrucText.setTextBounds(30, 200, game.width - 60);
     instrucText.boundsAlignH = 'center';

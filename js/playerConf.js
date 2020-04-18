@@ -1,6 +1,6 @@
 let textStyle = {
-	font: 'Rammetto One',
-	fontSize: '20pt',
+	font: 'Brightly',
+	fontSize: '40pt',
 	fontWeight: 'bold',
 	fill: '#b60404'
 };
@@ -33,9 +33,9 @@ function createPlayerConf() {
 	let text = game.add.text(game.world.centerX, 80, 'Choose your name:', textStyle); // Text
 	text.anchor.setTo(0.5, 0.5);
 
-	let text2 = game.add.text(game.world.centerX, 400, 'Press button for random names', {
-		font: 'Rammetto One',
-		fontSize: '15pt',
+	let text2 = game.add.text(game.world.centerX, 440, 'Press button for random names or write it', {
+		font: 'Cipitillo',
+		fontSize: '20pt',
 		fill: '#b60404'
 	}); // Text
 	text2.anchor.setTo(0.5, 0.5);

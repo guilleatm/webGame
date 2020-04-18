@@ -10,8 +10,8 @@ let wfConfig = {
     },
 
     custom: {
-        families: ['myFont', 'Cipitillo'],
-        urls: ["../assets/fonts/molot.otf", "../assets/fonts/Cipitillo.otf"]
+        families: ['Brightly', 'Cipitillo', 'Deadmobil'],
+        urls: ["../assets/fonts/Brightly.otf", "../assets/fonts/Cipitillo.otf", "../assets/fonts/Deadmobil.ttf"]
     }
 };
 

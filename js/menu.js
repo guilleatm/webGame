@@ -59,7 +59,7 @@ function createMenu() {
 
     let textTitle = 'Falling Rabbit';
     let styleTitle = {
-        font: 'Cipitillo',
+        font: 'Brightly',
         fontSize: '35pt',
         fontWeight: 'bold',
         fill: '#b60404'
@@ -74,7 +74,7 @@ function createMenu() {
     btnLvl = game.add.button(game.width / 2, game.height / 3 + 53,
         'lvlButton', onLvlSelectorButtonPressed);
         btnLvl.anchor.setTo(0.5,0.5);
-        btnLvl.scale.setTo(0.6, 0.6);
+        btnLvl.scale.setTo(0.65, 0.65);
 
     btnAbout = game.add.button(game.width / 2, game.height / 3 + 120,
         'aboutButton', onAboutButtonPressed);

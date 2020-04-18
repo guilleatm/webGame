@@ -15,44 +15,46 @@ function showInstructions() {
 
     let textTitle = 'More Screen';
     let styleTitle = {
-        font: 'Rammetto One',
-        fontSize: '25pt',
+        font: 'Brightly',
+        fontSize: '40pt',
         fontWeight: 'bold',
         fill: '#b60404'
     };
-    game.add.text(75, 25, textTitle, styleTitle);
-
-    let credits = 'Developed by...\n';
-    game.add.text(125, game.height / 6, credits, {
-        font: 'bold 26pt FerrumExtracondensed',
-        fill: '#b60404'
+    let title = game.add.text(game.width / 2, 70, textTitle, styleTitle);
+    title.anchor.setTo(0.5,0.5);
+    
+    let credits = 'Developed by: ';
+    game.add.text( 30, 150, credits, {
+        font: 'bold 18pt Cipitillo',
+        fill: '#088A08'
+        
     });
 
     let msgAuthors = 'Phaser 13: JSON returns';
     let styleAuthors = {
-       	font: 'myFont',
-        fontSize: '20pt',
+       	font: 'Cipitillo',
+        fontSize: '26pt',
         fontWeight: 'bold',
-        fill: '#b60404'
+        fill: '#088A08'
     };
-    game.add.text(125, game.height / 6 + 60, msgAuthors, styleAuthors);
+    game.add.text(200, 145, msgAuthors, styleAuthors);
 
     authors = game.add.group();
     authors.inputEnableChildren = true;
     authors.onChildInputOver.add(overText, this);
     authors.onChildInputOut.add(outText, this);
     let styleSingleAuthor = {
-        font: 'bold 18pt Sniglet',
+        font: 'bold 20pt Cipitillo',
         fill: '#b60404'
     };
 
-    let author = game.add.text(175, game.height / 6 + 110, 'Guillermo Arnau Tamarit',
+    let author = game.add.text(145, game.height / 6 + 110, 'Guillermo Arnau Tamarit',
         styleSingleAuthor);
     authors.add(author);
     author = game.add.text(175, game.height / 6 + 160, 'Óscar Silvestre Payá',
         styleSingleAuthor);
     authors.add(author);
-    author = game.add.text(175, game.height / 6 + 210, '??',
+    author = game.add.text(game.width / 2 - 20, game.height / 6 + 210, '??',
         styleSingleAuthor);
     authors.add(author);
 
@@ -62,9 +64,9 @@ function showInstructions() {
 
     let instrucText = game.add.text(0, 0, instructions, {
         font: '14pt Sniglet',
-        fill: '#b60404'
+        fill: '#000000'
     });
-    instrucText.setTextBounds(30, game.height - 170, game.width - 60);
+    instrucText.setTextBounds(30, game.height - 220, game.width - 60);
     instrucText.boundsAlignH = 'center';
     instrucText.boundsAlignV = 'middle';
     instrucText.wordWrap = true;

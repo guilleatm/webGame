@@ -298,8 +298,8 @@ function addCube(x, y, cubeScale, platformType, extra) {
 function createText() {
 
     let onGameTextStyle = {
-        font: 'Rammetto One',
-        fontSize: '25pt',
+        font: 'Brightly',
+        fontSize: '23pt',
         fontWeight: 'bold',
         fill: '#b60404',
     };
