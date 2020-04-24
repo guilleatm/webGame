@@ -10,7 +10,7 @@ let platforms, obstacles;
 let levelConf;
 let remainingFloors;
 let remainingFloorsText;
-let currentPowerup;
+let currentPowerup, powerupIcon;
 let lifeSprites;
 
 const INITIAL_PLAYER_Y = 50, INITIAL_PLATFORM_Y = 400;
@@ -50,6 +50,8 @@ function onPlatformCollide(player, cube) { // Se crida cuan els objectes ja han 
 	if (cube.type == 'grass_carrot') {
 		cube.children[0].kill();
 		currentPowerup = POWERUP_DURATION;
+		powerupIcon.visible = true;
+
 	}
 
 	if (cube.type == 'stone')
@@ -64,6 +66,9 @@ function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per 
 		destroyCube(cube);
 		player.body.velocity.y = 100;
 		currentPowerup--;
+		if (currentPowerup <= 0) {
+			powerupIcon.visible = false;
+		}
 		return false;
 	}
 	else if (cube.type == 'grass_broken') {
@@ -85,7 +90,10 @@ function onObstacleCollide(player, obstacle) {
 		destroyObstacle(obstacle);
 		lifeSprites.children[--lifes].destroy();
 	} else {
-		game.state.start('endScreen', endScreenState);
+		
+		player.children[0].visible = true;
+		player.children[1].visible = true;
+		player.children[0].animations.play('bye'); //#C Si bunny per raere de la explosió
 	}
 }
 
@@ -180,6 +188,22 @@ function updateText() {
 	remainingFloorsText.setText(remainingFloors);
 }
 
+
+function explosionAnimationFinished() {
+	game.state.start('endScreen', endScreenState);
+}
+
+function gameScreenOnDown() {
+
+	let keyPressed = game.input.keyboard.event.key.toLowerCase();
+
+	for (let i = 0; i < platforms.children.length; i++) {
+		let platformType = platforms.children[i].type;
+		if (platformType.substring(0, 12) == 'grass_letter' && platformType.substring(13, 14).toLowerCase() == keyPressed) {
+			destroyCube(platforms.children[i]);
+		}
+	}
+}
 //----CREATE--------------------------------------------------------------------------------------
 
 function createGame() {
@@ -202,7 +226,8 @@ function createGame() {
 
 	createText();
 	createHUD();
-	
+
+	game.input.keyboard.addCallbacks(this, gameScreenOnDown);
 
 }
 
@@ -225,11 +250,22 @@ function createPlayer() {
 
 	game.camera.follow(player);
 
-	// Afegim animacions
-	//player.animations.add('left', [0, 1, 2, 3], 10, true);
-	//player.animations.add('right', [5, 6, 7, 8], 10, true);
+	let explosionAnimation = game.make.sprite(0, 0, 'explosionAnimation');
+    	explosionAnimation.animations.add('bye', [0,1,2,3,4], 6, false);
+		explosionAnimation.anchor.setTo(0.5, 0.5);
+		explosionAnimation.scale.setTo(1.5, 1.5);
+		explosionAnimation.visible = false;
+		explosionAnimation.events.onAnimationComplete.add(explosionAnimationFinished, this);
 
-	// Controls
+	let bunnyDead = game.make.sprite(0, 0, 'bunnyhurt');
+		bunnyDead.anchor.setTo(0.5, 0.5);
+		bunnyDead.visible = false;
+
+
+	player.addChild(explosionAnimation);
+	player.addChild(bunnyDead);
+	
+
 	controls = game.input.keyboard.createCursorKeys();
 }
 
@@ -251,16 +287,23 @@ function generateLevel() {
 
 	for (let nFloor = 0; nFloor < levelConf.data.length; nFloor++) {
 		for (let nCube = 0; nCube < levelConf.data[nFloor].length; nCube++) {
-			if (levelConf.data[nFloor][nCube] == 1) { // Plataforma normal
-				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'grass');
-			} else if (levelConf.data[nFloor][nCube] == 2) { // Plataforma en cactus
-				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'grass', 'cactus');
-			} else if (levelConf.data[nFloor][nCube] == 3) { // Plataforma final
-				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'stone');
-			} else if (levelConf.data[nFloor][nCube] == 4) {
-				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'grass_broken')
-			} else if (levelConf.data[nFloor][nCube] == 5) {
-				addCube(PLATFORM_WIDTH * nCube, INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor, cubeScale, 'grass', 'carrot')
+
+			let cubeType = levelConf.data[nFloor][nCube];
+			let cubeX = PLATFORM_WIDTH * nCube;
+			let cubeY = INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor;
+
+			if (cubeType == 1) { // Plataforma normal
+				addCube(cubeX, cubeY, cubeScale, 'grass');
+			} else if (cubeType == 2) { // Plataforma en cactus
+				addCube(cubeX, cubeY, cubeScale, 'grass', 'cactus');
+			} else if (cubeType == 3) { // Plataforma final
+				addCube(cubeX, cubeY, cubeScale, 'stone');
+			} else if (cubeType == 4) {
+				addCube(cubeX, cubeY, cubeScale, 'grass_broken');
+			} else if (cubeType == 5) {
+				addCube(cubeX, cubeY, cubeScale, 'grass', 'carrot');
+			} else if (cubeType == 6) {
+				addCube(cubeX, cubeY, cubeScale, 'grass', 'letter'); //#C Se pot easily canviar la skin de este cube
 			}
 		}
 	}
@@ -289,8 +332,17 @@ function addCube(x, y, cubeScale, platformType, extra) {
 		carrot.anchor.setTo(0.5, 1);
 
 		cube.addChild(carrot);
-
 		cube.type += '_carrot';
+
+	} else if (extra == 'letter') {
+
+		// char = numero aleatori entre [65,90] el convertix a char (Tabla ASCII)
+		let char = String.fromCharCode(Math.random() * (91 - 65) + 65);
+
+		let cubeLetter = game.add.text(PLATFORM_WIDTH, -10, char, {font: 'Brightly', fontSize: '90pt', fontWeight: 'bold', fill: '#b60404'});
+		cubeLetter.anchor.setTo(0.5, 1);
+		cube.addChild(cubeLetter);
+		cube.type += '_letter_' + char;
 	}
 
 }
@@ -326,12 +378,21 @@ function createHUD() {
 		lifeSprite.fixedToCamera = true;
 	}
 
+	powerupIcon = game.add.sprite(game.width - 200 , 30, 'carrot');
+	powerupIcon.visible = false;
+	powerupIcon.scale.setTo(0.8, 0.8)
+	powerupIcon.fixedToCamera = true;
+
 }
+
 
 //----PRELOAD--------------------------------------------------------------------------------------
 
 function loadSprites() {
 	game.load.image('player', 'assets/player/bunny1_stand.png'); // #c
+	game.load.image('bunnyhurt', 'assets/backgrounds/gameOver/bunny2_hurt.png');
+
+	game.load.spritesheet('explosionAnimation', 'assets/player/spritesheetExplosion.png', 192 , 192, 7);
 
 	// game.load.spritesheet('collector', 'assets/imgs/dude.png', 32, 48); // #c
 	// game.load.spritesheet('enemy', 'assets/imgs/enemySprite.png', 55, 53, 15);
@@ -344,6 +405,7 @@ function loadImages() {
 	game.load.image('cactus', 'assets/objects/cactus.png');
 	game.load.image('life', 'assets/objects/life.png');
 	game.load.image('carrot', 'assets/objects/carrot.png')
+
 
 
 
@@ -368,3 +430,10 @@ function loadSounds() {
 function loadLevel(level) {
 	game.load.text("currentLevel", pathToLevels + "lvl" + level + ".json", true);
 }
+
+
+
+
+
+//----OTHERS----------------------------------------------------------------------------
+

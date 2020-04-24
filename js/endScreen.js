@@ -1,4 +1,4 @@
-let counter = 0;
+let counter;
 
 let endScreenState = {
     preload: preloadEndScreen,
@@ -46,7 +46,7 @@ function createEndScreen() {
             explosionTween.delay(3300);
             explosionTween.start();
     
-    let instructions = 'Play again by pressing the “S” key';
+    let instructions = 'Play again by pressing the  “S” key';
     
     let instrucText = game.add.text(0, 0, instructions, {
         font: '18pt Deadmobil',
@@ -67,7 +67,7 @@ function createEndScreen() {
 	game.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
 	game.input.keyboard.addCallbacks(this, endScreenOnDown);
 
-    
+    counter = 0;
 }
 
 function updateCounter() {
