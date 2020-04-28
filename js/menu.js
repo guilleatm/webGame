@@ -4,10 +4,10 @@ let menuState = {
 };
 
 let playerName;
-
 let mainTween, downTween1, downTween2;
 let rabbit;
 let btnAbout, btnConfig, btnPlay, btnMain;
+let musicMain;
 let levelToPlay;
 let lifes = 3;
 
@@ -22,12 +22,16 @@ function preloadMenu() {
     game.load.image('rabbit', 'assets/player/bunny1_ready.png');
     game.load.image('sun', 'assets/objects/sun1.png');
     game.load.image('bubble', 'assets/objects/bubble.png');
+
+    game.load.audio('mainSnd', 'assets/snds/main.ogg');
 }
 
 function createMenu() {
     levelToPlay = 1;
     //game.input.enabled = true; // #c
     game.add.image(0,-250, 'bg');
+    musicMain = game.add.audio('mainSnd');
+    musicMain.play();
 	
 	rabbit = game.add.sprite(0, game.height, 'rabbit'); //image o sprite?
     rabbit.anchor.setTo(0.5, 0.5);

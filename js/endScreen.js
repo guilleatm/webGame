@@ -11,7 +11,8 @@ function preloadEndScreen() {
     game.load.image('moon', 'assets/backgrounds/gameOver/moon.png');
     game.load.image('gameOver', 'assets/backgrounds/gameOver/gameOver.png');
     game.load.image('bunnyhurt', 'assets/backgrounds/gameOver/bunny2_hurt.png');
-    game.load.spritesheet('explosion', 'assets/player/spritesheetExplosion.png', 192 , 192, 8); // Soles ni han 7 imatges, carregue 8 perque com a ultima agafa una imatge sense res i va be pa quan acava la animació
+    game.load.spritesheet('explosion', 'assets/player/spritesheetExplosion.png', 192 , 192, 8); 
+    game.load.audio('endSnd', 'assets/snds/gameOver.ogg');
 }
 
 function createEndScreen() {
@@ -35,6 +36,10 @@ function createEndScreen() {
     let bunnyhurt = game.add.image(game.width / 2, game.height - 220, 'bunnyhurt');
     bunnyhurt.anchor.setTo(0.5, 0.5);
     bunnyhurt.scale.setTo(0.5, 0.5);
+    
+    musicMain.pause(); //no para la música
+    let musicEnd = game.add.audio('endSnd');
+    musicEnd.play();
 
     gameOverTween = game.add.tween(gameOver).to({alpha: 0}, 700, Phaser.Easing.Linear.None)
                 .to({alpha: 1.0}, 700, Phaser.Easing.Linear.None);
