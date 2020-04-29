@@ -1,3 +1,5 @@
+import { CENTER } from "phaser-ce";
+
 let gameState = {
 	preload: preloadGame,
 	create: createGame,
@@ -35,7 +37,7 @@ function preloadGame() {
 function updateGame() {
 
 	manageInput();
-	mangePlatformsPosition()
+	managePlatformsPosition()
 
 	game.physics.arcade.collide(player, platforms, onPlatformCollide, onPlatformProcess, this);
 	game.physics.arcade.collide(player, obstacles, onObstacleCollide, onObstacleProcess, this);
@@ -147,10 +149,34 @@ function manageInput() {
 			obstacles.children[i].body.velocity.x = 0;
 	}
 
+	//mouse move
 
+	// if (game.input.mousePointer.x > game.width / 2) //Dreta
+	// {
+	// 	for (let i = 0; i < platforms.children.length; i++)
+	// 		platforms.children[i].body.velocity.x = PLATFORM_VEL;
+
+	// 	for (let i = 0; i < obstacles.children.length; i++)
+	// 		obstacles.children[i].body.velocity.x = PLATFORM_VEL;
+	// }
+
+	// else if (game.input.mousePointer.x < game.width / 2) { // Esquerra
+	// 	for (let i = 0; i < platforms.children.length; i++)
+	// 		platforms.children[i].body.velocity.x = PLATFORM_VEL;
+
+	// 	for (let i = 0; i < obstacles.children.length; i++)
+	// 		obstacles.children[i].body.velocity.x = PLATFORM_VEL;
+
+	// } else { // Quet
+	// 	for (let i = 0; i < platforms.children.length; i++)
+	// 		platforms.children[i].body.velocity.x = 0;
+
+	// 	for (let i = 0; i < obstacles.children.length; i++)
+	// 		obstacles.children[i].body.velocity.x = 0;
+	// }
 }
 
-function mangePlatformsPosition() {
+function managePlatformsPosition() {
 	if (platforms.children[0].body.velocity.x > 0) { // Les plataformes van cap a la dreta
 		for (let i = 0; i < platforms.children.length; i++) {
 			if (platforms.children[i].position.x > 600) {
