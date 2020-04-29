@@ -8,6 +8,8 @@ let authors;
 function loadAboutAssets() {
     game.load.image('backButton', 'assets/buttons/backButton.png');
     game.load.image('bg2', 'assets/backgrounds/backgroundCastles.png');
+    game.load.image('developerOscar', 'assets/player/oscar.jpg');
+    game.load.image('developerGuille', 'assets/player/guille.jpg');
 
 	game.load.audio('mainSnd', 'assets/snds/main.ogg');
 }
@@ -45,7 +47,7 @@ function showInstructions() {
     authors.inputEnableChildren = true;
     authors.onChildInputOver.add(overText, this);
     authors.onChildInputOut.add(outText, this);
-	authors.onDown.add(onClickText, this);
+	authors.onChildInputDown.add(onClickText, this);
     let styleSingleAuthor = {
         font: 'bold 20pt Cipitillo',
         fill: '#b60404'
@@ -95,5 +97,17 @@ function outText(text, pointer) {
 }
 
 function onClickText(text, pointer) {
-    let photo = game.add.sprite(game.width / 2, game.height / 2, 'player');
+    if (text.text == 'Óscar Silvestre Payá')
+    {
+        let photo = game.add.image(game.width / 2, game.height / 2, 'developerOscar');
+        photo.anchor.setTo(0.5, 0.5);
+        photo.scale.setTo(0.2, 0.2);
+    }
+    else if (text.text == 'Guillermo Arnau Tamarit')
+    {
+        let photo = game.add.image(game.width / 2, game.height / 2, 'developerGuille');
+        photo.anchor.setTo(0.5, 0.5);
+        photo.scale.setTo(0.2, 0.2);
+    }
+    
 }
