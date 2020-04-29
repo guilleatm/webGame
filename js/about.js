@@ -45,6 +45,7 @@ function showInstructions() {
     authors.inputEnableChildren = true;
     authors.onChildInputOver.add(overText, this);
     authors.onChildInputOut.add(outText, this);
+	authors.onDown.add(onClickText, this);
     let styleSingleAuthor = {
         font: 'bold 20pt Cipitillo',
         fill: '#b60404'
@@ -91,4 +92,8 @@ function overText(text, pointer) {
 
 function outText(text, pointer) {
     text.fill = '#b60404';
+}
+
+function onClickText(text, pointer) {
+    let photo = game.add.sprite(game.width / 2, game.height / 2, 'player');
 }
