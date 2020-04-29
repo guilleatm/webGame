@@ -7,7 +7,6 @@ let playerName;
 let mainTween, downTween1, downTween2;
 let rabbit;
 let btnAbout, btnConfig, btnPlay, btnMain;
-let musicMain;
 let levelToPlay;
 let lifes = 3;
 
@@ -23,15 +22,12 @@ function preloadMenu() {
     game.load.image('sun', 'assets/objects/sun1.png');
     game.load.image('bubble', 'assets/objects/bubble.png');
 
-    game.load.audio('mainSnd', 'assets/snds/main.ogg');
 }
 
 function createMenu() {
     levelToPlay = 1;
     //game.input.enabled = true; // #c
     game.add.image(0,-250, 'bg');
-    musicMain = game.add.audio('mainSnd');
-    musicMain.play();
 	
 	rabbit = game.add.sprite(0, game.height, 'rabbit'); //image o sprite?
     rabbit.anchor.setTo(0.5, 0.5);
@@ -98,7 +94,10 @@ function createMenu() {
     btnPlay = game.add.button(game.width / 2, game.height / 3 + 310,
         'playButton', onPlayButtonPressed);
         btnPlay.anchor.setTo(0.5,0.5);
-        btnPlay.scale.setTo(1.2, 1.2);   
+        btnPlay.scale.setTo(1.2, 1.2);
+
+	let mainMusic = game.add.audio('mainSnd');
+    mainMusic.play();
 }
 
 function createRandomTween(myTween, sprite) {
@@ -135,29 +134,36 @@ function onMainTweenCompleteed(object, tween) {
 }
 
 function onLvlSelectorButtonPressed() {
-	if (playerName != undefined && playerName.text.length > 0) 
+	if (playerName != undefined && playerName.text.length > 0) {
+		game.sound.stopAll();
 		game.state.start('levelSelector', levelSelectorState);
+	}
 }
 
 function onAboutButtonPressed() {
+	game.sound.stopAll();
 	game.state.start('about', aboutState);
 }
 
 function onConfigButtonPressed() {
+	game.sound.stopAll();
     game.state.start('instructions', instructionsState);
 }
 
 function onMainButtonPressed() {
+	game.sound.stopAll();
     game.state.start('playerConf', playerConfState);
 }
 
 function onPlayButtonPressed() {
 	if (playerName != undefined && playerName.text.length > 0) {
+		game.sound.stopAll();
 		lifes = 3;
 		game.state.start('game', gameState);
 	}
 }
 
 function onBackButtonPressed() {
+	game.sound.stopAll();
     game.state.start('menu');
 }

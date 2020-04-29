@@ -8,6 +8,8 @@ let authors;
 function loadAboutAssets() {
     game.load.image('backButton', 'assets/buttons/backButton.png');
     game.load.image('bg2', 'assets/backgrounds/backgroundCastles.png');
+
+	game.load.audio('mainSnd', 'assets/snds/main.ogg');
 }
 
 function showInstructions() {
@@ -76,6 +78,10 @@ function showInstructions() {
         onBackButtonPressed);
     btnPlay.anchor.setTo(0.5, 0.5);
     btnPlay.scale.setTo(1.2, 1.2);
+
+
+	let mainMusic = game.add.audio('mainSnd');
+    mainMusic.play();
 }
 
 

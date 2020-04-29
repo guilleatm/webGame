@@ -29,6 +29,7 @@ function showInstructions() {
         font: '14pt Sniglet',
         fill: '#000000'
     });
+
     instrucText.setTextBounds(30, 200, game.width - 60);
     instrucText.boundsAlignH = 'center';
     instrucText.boundsAlignV = 'middle';
@@ -39,4 +40,7 @@ function showInstructions() {
         onBackButtonPressed);
     btnPlay.anchor.setTo(0.5, 0.5);
     btnPlay.scale.setTo(1.2, 1.2);
+
+	let mainMusic = game.add.audio('mainSnd');
+    mainMusic.play();
 }

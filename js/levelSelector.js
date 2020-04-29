@@ -55,6 +55,9 @@ function createLevelSelector() {
         onBackButtonPressed);
     	btnPlay.anchor.setTo(0.5, 0.5);
     	btnPlay.scale.setTo(1.2, 1.2);
+
+	let mainMusic = game.add.audio('mainSnd');
+    mainMusic.play();
 }
 
 function onLvlButtonPressed(button) {

@@ -65,6 +65,9 @@ function createPlayerConf() {
 	if (playerName != undefined) {
 		playerName.setText(playerName.text); // Actualitza el text de pantalla
 	}
+
+	let mainMusic = game.add.audio('mainSnd');
+    mainMusic.play();
 }
 
 
@@ -85,7 +88,9 @@ function onDown() { // Se crida cuan una key està down
 
 function backMain() {
 	if (playerName.text.length > 0){
-		game.state.start('menu');}				
+		game.sound.stopAll();
+		game.state.start('menu');
+	}				
 }
 
 
