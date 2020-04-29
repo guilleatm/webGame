@@ -13,6 +13,8 @@ function preloadLevelSelector() {
 	game.load.image('lvl6', 'assets/buttons/lvl6.png');
 	game.load.image('backButton', 'assets/buttons/backButton.png');
 	game.load.image('bg2', 'assets/backgrounds/backgroundCastles.png');
+
+	game.load.audio('mainSnd', 'assets/snds/main.ogg');
 }
 
 function createLevelSelector() {

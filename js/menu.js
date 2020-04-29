@@ -22,6 +22,8 @@ function preloadMenu() {
     game.load.image('sun', 'assets/objects/sun1.png');
     game.load.image('bubble', 'assets/objects/bubble.png');
 
+	game.load.audio('mainSnd', 'assets/snds/main.ogg');
+
 }
 
 function createMenu() {

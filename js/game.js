@@ -1,5 +1,3 @@
-import { CENTER } from "phaser-ce";
-
 let gameState = {
 	preload: preloadGame,
 	create: createGame,
@@ -95,7 +93,7 @@ function onObstacleCollide(player, obstacle) {
 		
 		player.children[0].visible = true;
 		player.children[1].visible = true;
-		player.children[0].animations.play('bye'); //#C Si bunny per raere de la explosió
+		player.children[1].animations.play('bye'); //#C Si bunny per raere de la explosió
 	}
 }
 
@@ -288,8 +286,9 @@ function createPlayer() {
 		bunnyDead.visible = false;
 
 
-	player.addChild(explosionAnimation);
+	
 	player.addChild(bunnyDead);
+	player.addChild(explosionAnimation);
 	
 
 	controls = game.input.keyboard.createCursorKeys();
@@ -445,12 +444,7 @@ function loadImages() {
 }
 
 function loadSounds() {
-	// game.load.audio('damaged', 'assets/snds/hurt1.wav');
-	// game.load.audio('collectstar', 'assets/snds/cling.wav');
-	// game.load.audio('getaid', 'assets/snds/wooo.wav');
-	// game.load.audio('hitenemy', 'assets/snds/snare.wav');
-	// game.load.audio('outoftime', 'assets/snds/klaxon4-dry.wav');
-	// game.load.audio('levelpassed', 'assets/snds/success.wav');
+	game.load.audio('mainSnd', 'assets/snds/main.ogg');
 }
 
 function loadLevel(level) {

@@ -37,7 +37,7 @@ function createEndScreen() {
     bunnyhurt.anchor.setTo(0.5, 0.5);
     bunnyhurt.scale.setTo(0.5, 0.5);
     
-    musicMain.pause(); //no para la música
+    game.sound.stopAll();
     let musicEnd = game.add.audio('endSnd');
     musicEnd.play();
 

@@ -25,6 +25,8 @@ function preloadPlayerConf() {
 	game.load.image('rndButton', 'assets/buttons/rndButton.png');
 	game.load.image('backButton', 'assets/buttons/backButton.png');
 	game.load.image('bg2', 'assets/backgrounds/backgroundCastles.png');
+
+	game.load.audio('mainSnd', 'assets/snds/main.ogg');
 }
 
 function createPlayerConf() {
