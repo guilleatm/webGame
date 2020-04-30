@@ -268,7 +268,12 @@ function createGame() {
 function createPlayer() {
 
 	// Jugador
-	player = game.add.sprite(levelConf.dimensions.width / 2, INITIAL_PLAYER_Y, 'player');
+	player = game.add.sprite(levelConf.dimensions.width / 2, INITIAL_PLAYER_Y, 'playerAnimation');
+	console.log(player);
+	player.animations.add('stand', [0], 10, false);
+	player.animations.add('jump', [1], 10, false);
+	console.log(player);
+	player.animations.play('stand');
 	player.anchor.setTo(0.5, 0.5);
 	player.scale.setTo(0.5, 0.5);
 	game.physics.arcade.enable(player);
@@ -279,6 +284,7 @@ function createPlayer() {
 	player.body.bounce.x = 0;
 
 	player.body.checkCollision.up = false;
+
 	
 	
 
@@ -415,7 +421,7 @@ function createHUD() {
 
 	powerupIcon = game.add.sprite(game.width - 200 , 30, 'carrot');
 	powerupIcon.visible = false;
-	powerupIcon.scale.setTo(0.8, 0.8)
+	powerupIcon.scale.setTo(0.8, 0.8);
 	powerupIcon.fixedToCamera = true;
 
 }
@@ -428,6 +434,7 @@ function loadSprites() {
 	game.load.image('bunnyhurt', 'assets/backgrounds/gameOver/bunny2_hurt.png');
 
 	game.load.spritesheet('explosionAnimation', 'assets/player/spritesheetExplosion.png', 192 , 192, 7);
+	game.load.spritesheet('playerAnimation', 'assets/player/playerAnimation.png', 120, 207, 2);
 
 	// game.load.spritesheet('collector', 'assets/imgs/dude.png', 32, 48); // #c
 	// game.load.spritesheet('enemy', 'assets/imgs/enemySprite.png', 55, 53, 15);
