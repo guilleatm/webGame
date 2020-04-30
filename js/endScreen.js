@@ -12,7 +12,9 @@ function preloadEndScreen() {
     game.load.image('gameOver', 'assets/backgrounds/gameOver/gameOver.png');
     game.load.image('bunnyhurt', 'assets/backgrounds/gameOver/bunny2_hurt.png');
     game.load.spritesheet('explosion', 'assets/player/spritesheetExplosion.png', 192 , 192, 8); 
+    
     game.load.audio('endSnd', 'assets/snds/gameOver.ogg');
+    game.load.audio('explosionSnd', 'assets/snds/explosion.ogg');
 }
 
 function createEndScreen() {
@@ -81,6 +83,7 @@ function updateCounter() {
         let explosion = game.add.sprite(game.width / 2, game.height - 220, 'explosion');
         explosion.animations.add('bye', [0,1,2,3,4,5,6,7], 6, false); // El frame 7 no te res, es per a que no se quede el fum.
         explosion.animations.play('bye');
+        game.add.audio('explosionSnd').play();
         explosion.anchor.setTo(0.5, 0.5);
         explosion.scale.setTo(0.8, 0.8);
     }

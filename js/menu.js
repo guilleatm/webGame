@@ -22,7 +22,8 @@ function preloadMenu() {
     game.load.image('sun', 'assets/objects/sun1.png');
     game.load.image('bubble', 'assets/objects/bubble.png');
 
-	game.load.audio('mainSnd', 'assets/snds/main.ogg');
+    game.load.audio('mainSnd', 'assets/snds/main.ogg');
+    game.load.audio('buttonSnd', 'assets/snds/buttonPress.ogg');
 
 }
 
@@ -137,35 +138,42 @@ function onMainTweenCompleteed(object, tween) {
 
 function onLvlSelectorButtonPressed() {
 	if (playerName != undefined && playerName.text.length > 0) {
-		game.sound.stopAll();
+        game.sound.stopAll();
+        game.add.audio('buttonSnd').play();
 		game.state.start('levelSelector', levelSelectorState);
 	}
 }
 
-function onAboutButtonPressed() {
-	game.sound.stopAll();
+function onAboutButtonPressed() {   
+    game.sound.stopAll();
+    game.add.audio('buttonSnd').play();	
 	game.state.start('about', aboutState);
 }
 
 function onConfigButtonPressed() {
-	game.sound.stopAll();
+    game.sound.stopAll();
+    game.add.audio('buttonSnd').play();
     game.state.start('instructions', instructionsState);
 }
 
 function onMainButtonPressed() {
-	game.sound.stopAll();
+    game.sound.stopAll();
+    game.add.audio('buttonSnd').play();
     game.state.start('playerConf', playerConfState);
 }
 
 function onPlayButtonPressed() {
+    
 	if (playerName != undefined && playerName.text.length > 0) {
-		game.sound.stopAll();
+        game.sound.stopAll();
+        game.add.audio('buttonSnd').play();
 		lifes = 3;
 		game.state.start('game', gameState);
 	}
 }
 
 function onBackButtonPressed() {
-	game.sound.stopAll();
+    game.sound.stopAll();
+    game.add.audio('buttonSnd').play();
     game.state.start('menu');
 }

@@ -11,7 +11,7 @@ function loadAboutAssets() {
     game.load.image('developerOscar', 'assets/player/oscar.jpg');
     game.load.image('developerGuille', 'assets/player/guille.jpg');
 
-	game.load.audio('mainSnd', 'assets/snds/main.ogg');
+    game.load.audio('mainSnd', 'assets/snds/main.ogg');
 }
 
 function showInstructions() {

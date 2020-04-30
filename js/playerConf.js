@@ -27,6 +27,7 @@ function preloadPlayerConf() {
 	game.load.image('bg2', 'assets/backgrounds/backgroundCastles.png');
 
 	game.load.audio('mainSnd', 'assets/snds/main.ogg');
+	game.load.audio('buttonSnd', 'assets/snds/buttonPress.ogg');
 }
 
 function createPlayerConf() {
@@ -91,6 +92,7 @@ function onDown() { // Se crida cuan una key està down
 function backMain() {
 	if (playerName.text.length > 0){
 		game.sound.stopAll();
+		game.add.audio('buttonSnd').play();
 		game.state.start('menu');
 	}				
 }

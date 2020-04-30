@@ -42,20 +42,24 @@ function updateGame() {
 }
 
 function onPlatformCollide(player, cube) { // Se crida cuan els objectes ja han xocat
+	
 	player.body.velocity.y = -DEFAULT_VEL;
-
 	remainingFloors = levelConf.data.length - calculateCurrentFloor(cube.position.y) - 1;	
 	updateText();
 
 	if (cube.type == 'grass_carrot') {
+		game.add.audio('carrotSnd').play();
 		cube.children[0].kill();
 		currentPowerup = POWERUP_DURATION;
 		powerupIcon.visible = true;
 
 	}
 
-	if (cube.type == 'stone')
+	if (cube.type == 'stone') {
 		win();
+		return;
+	}	
+	game.add.audio('jumpSnd').play();
 }
 
 function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per si vols comprovar algo per a anular la colisió
@@ -63,6 +67,7 @@ function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per 
 	if (cube.type == 'stone')
 		return true;
 	else if (currentPowerup > 0) {
+		game.add.audio('breakSnd').play();
 		destroyCube(cube);
 		player.body.velocity.y = 100;
 		currentPowerup--;
@@ -72,11 +77,13 @@ function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per 
 		return false;
 	}
 	else if (cube.type == 'grass_broken') {
+		game.add.audio('breakSnd').play();
 		destroyCube(cube);
 		return true;
 	}
 
 	if (player.body.velocity.y > DESTRUCTION_VEL) {
+		game.add.audio('breakSnd').play();
 		destroyCube(cube);
 		player.body.velocity.y -= ON_DESTRUCTION_LOST_VEL;
 		return false;
@@ -86,6 +93,7 @@ function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per 
 
 function onObstacleCollide(player, obstacle) {
 	if (lifes > 1) {
+		game.add.audio('hitSnd').play();
 		player.body.velocity.x = 0;
 		destroyObstacle(obstacle);
 		lifeSprites.children[--lifes].destroy();
@@ -93,11 +101,13 @@ function onObstacleCollide(player, obstacle) {
 		
 		player.children[0].visible = true;
 		player.children[1].visible = true;
-		player.children[1].animations.play('bye'); //#C Si bunny per raere de la explosió
+		game.add.audio('explosionSnd').play();
+		player.children[1].animations.play('bye'); //#C Si bunny per raere de la explosió		
 	}
 }
 
 function win() {
+	game.sound.stopAll();
 	if (levelToPlay++ <= NUM_LEVELS) {
 		lifes = 3
 		game.state.start('game', gameState);
@@ -252,7 +262,7 @@ function createGame() {
 	createHUD();
 
 	game.input.keyboard.addCallbacks(this, gameScreenOnDown);
-
+	game.add.audio('gamePlaySnd').play();
 }
 
 function createPlayer() {
@@ -275,7 +285,7 @@ function createPlayer() {
 	game.camera.follow(player);
 
 	let explosionAnimation = game.make.sprite(0, 0, 'explosionAnimation');
-    	explosionAnimation.animations.add('bye', [0,1,2,3,4], 6, false);
+		explosionAnimation.animations.add('bye', [0,1,2,3,4], 6, false);		
 		explosionAnimation.anchor.setTo(0.5, 0.5);
 		explosionAnimation.scale.setTo(1.5, 1.5);
 		explosionAnimation.visible = false;
@@ -445,6 +455,12 @@ function loadImages() {
 
 function loadSounds() {
 	game.load.audio('mainSnd', 'assets/snds/main.ogg');
+	game.load.audio('gamePlaySnd', 'assets/snds/gameplay.ogg');
+	game.load.audio('explosionSnd', 'assets/snds/explosion.ogg');
+	game.load.audio('jumpSnd', 'assets/snds/jumping.ogg');
+	game.load.audio('hitSnd', 'assets/snds/hurt1.ogg');
+	game.load.audio('carrotSnd', 'assets/snds/carrot.ogg');
+	game.load.audio('breakSnd', 'assets/snds/break.ogg');
 }
 
 function loadLevel(level) {
