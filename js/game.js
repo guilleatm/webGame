@@ -21,6 +21,7 @@ const PLAYER_GRAVITY = 1000;
 const DEFAULT_VEL = PLAYER_GRAVITY * 0.55, DESTRUCTION_VEL = DEFAULT_VEL * 2.5, ON_DESTRUCTION_LOST_VEL = DEFAULT_VEL * 1.2;
 const NUM_LEVELS = 6;
 const POWERUP_DURATION = 4;
+const SPRING_IMPULSE = 1500; // 1500 = 3 pisos
 
 function preloadGame() {
 	loadSprites();
@@ -76,7 +77,9 @@ function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per 
 		}
 		return false;
 	}
-	else if (cube.type == 'grass_broken') {
+	else if (player.body.velocity.y < 0) { // Si el conill ve de baix (spring)
+		return false;
+	} else if (cube.type == 'grass_broken') {
 		game.add.audio('breakSnd').play();
 		destroyCube(cube);
 		return true;
@@ -88,10 +91,22 @@ function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per 
 		player.body.velocity.y -= ON_DESTRUCTION_LOST_VEL;
 		return false;
 	}
+
 	return true;
 }
 
 function onObstacleCollide(player, obstacle) {
+
+	if (obstacle.type == 'spring') {
+		onSpringCollision(player, obstacle)
+
+	} else if (obstacle.type == 'cactus') {
+		onCactusCollision(player, obstacle)
+	}
+	
+}
+
+function onCactusCollision(player, obstacle) {
 	if (lifes > 1) {
 		game.add.audio('hitSnd').play();
 		player.body.velocity.x = 0;
@@ -104,6 +119,11 @@ function onObstacleCollide(player, obstacle) {
 		game.add.audio('explosionSnd').play();
 		player.children[1].animations.play('bye'); //#C Si bunny per raere de la explosió		
 	}
+}
+
+function onSpringCollision(player, obstacle) {
+	player.body.velocity.y = -SPRING_IMPULSE;
+	//animacions spring(obstacle)
 }
 
 function win() {
@@ -269,10 +289,8 @@ function createPlayer() {
 
 	// Jugador
 	player = game.add.sprite(levelConf.dimensions.width / 2, INITIAL_PLAYER_Y, 'playerAnimation');
-	console.log(player);
 	player.animations.add('stand', [0], 10, false);
 	player.animations.add('jump', [1], 10, false);
-	console.log(player);
 	player.animations.play('stand');
 	player.anchor.setTo(0.5, 0.5);
 	player.scale.setTo(0.5, 0.5);
@@ -345,6 +363,8 @@ function generateLevel() {
 				addCube(cubeX, cubeY, cubeScale, 'grass', 'carrot');
 			} else if (cubeType == 6) {
 				addCube(cubeX, cubeY, cubeScale, 'grass', 'letter'); //#C Se pot easily canviar la skin de este cube
+			} else if (cubeType == 7) {
+				addCube(cubeX, cubeY, cubeScale, 'grass', 'spring');
 			}
 		}
 	}
@@ -363,6 +383,7 @@ function addCube(x, y, cubeScale, platformType, extra) {
 
 	if (extra == 'cactus') {
 		let cactus = obstacles.create(x + PLATFORM_WIDTH / 2 , y, 'cactus');
+		cactus.type = 'cactus'
 		cactus.scale.setTo(cubeScale, cubeScale);
 		cactus.anchor.setTo(0.5, 1);
 		cactus.body.immovable = true;
@@ -384,6 +405,15 @@ function addCube(x, y, cubeScale, platformType, extra) {
 		cubeLetter.anchor.setTo(0.5, 1);
 		cube.addChild(cubeLetter);
 		cube.type += '_letter_' + char;
+	} else if (extra == 'spring') {
+		let spring = obstacles.create(x + PLATFORM_WIDTH / 2 , y, 'spring');
+		spring.type = 'spring'
+		spring.scale.setTo(cubeScale, cubeScale);
+		spring.anchor.setTo(0.5, 1);
+		spring.body.immovable = true;
+		spring.body.checkCollision.down = false;
+		cube.type += '_spring';
+
 	}
 
 }
@@ -447,6 +477,7 @@ function loadImages() {
 	game.load.image('cactus', 'assets/objects/cactus.png');
 	game.load.image('life', 'assets/objects/life.png');
 	game.load.image('carrot', 'assets/objects/carrot.png')
+	game.load.image('spring', 'assets/objects/spring.png')
 
 
 
