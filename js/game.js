@@ -6,12 +6,13 @@ let gameState = {
 
 let pathToLevels = "../assets/levels/";
 let player, controls;
-let platforms, obstacles;
+let platforms, obstacles, enemies;
 let levelConf;
 let remainingFloors;
 let remainingFloorsText;
 let currentPowerup, powerupIcon;
 let lifeSprites;
+let lastVel;
 
 const INITIAL_PLAYER_Y = 50, INITIAL_PLATFORM_Y = 400;
 const PLATFORM_GAP = 300;
@@ -22,6 +23,7 @@ const DEFAULT_VEL = PLAYER_GRAVITY * 0.55, DESTRUCTION_VEL = DEFAULT_VEL * 2.5, 
 const NUM_LEVELS = 6;
 const POWERUP_DURATION = 4;
 const SPRING_IMPULSE = 1500; // 1500 = 3 pisos
+const ENEMIE_VELOCITY = 100;
 
 function preloadGame() {
 	loadSprites();
@@ -126,6 +128,15 @@ function onSpringCollision(player, obstacle) {
 	//animacions spring(obstacle)
 }
 
+
+function updateEnemie(e) {
+
+	if (Math.abs(player.body.y - e.body.y) < game.height / 2) {
+		e.body.velocity.x += ENEMIE_VELOCITY;
+	}
+
+}
+
 function win() {
 	game.sound.stopAll();
 	if (levelToPlay++ <= NUM_LEVELS) {
@@ -157,25 +168,29 @@ function destroyCube(cube) {
 function manageInput() {
 
 
-	if (controls.right.isDown) { // Dreta
-		for (let i = 0; i < platforms.children.length; i++)
-			platforms.children[i].body.velocity.x = -PLATFORM_VEL;
+	let vel = 0;
+	if (controls.right.isDown)
+		vel = -PLATFORM_VEL;
+	else if (controls.left.isDown)
+		vel = PLATFORM_VEL;
 
-		for (let i = 0; i < obstacles.children.length; i++)
-			obstacles.children[i].body.velocity.x = -PLATFORM_VEL;
-	} else if (controls.left.isDown) { // Esquerra
+	if (vel != lastVel) { // optimització
 		for (let i = 0; i < platforms.children.length; i++)
-			platforms.children[i].body.velocity.x = PLATFORM_VEL;
+			platforms.children[i].body.velocity.x = vel;
 
-		for (let i = 0; i < obstacles.children.length; i++)
-			obstacles.children[i].body.velocity.x = PLATFORM_VEL;
-	} else { // Quet
-		for (let i = 0; i < platforms.children.length; i++)
-			platforms.children[i].body.velocity.x = 0;
 
-		for (let i = 0; i < obstacles.children.length; i++)
-			obstacles.children[i].body.velocity.x = 0;
+		for (let i = 0; i < obstacles.children.length; i++) {
+			obstacles.children[i].body.velocity.x = vel;
+			if (obstacles.children[i].type == 'spikeMan')
+				updateEnemie(obstacles.children[i]);
+		}
 	}
+
+	lastVel = vel;
+
+
+	
+	
 
 	//mouse move
 
@@ -207,13 +222,13 @@ function manageInput() {
 function managePlatformsPosition() {
 	if (platforms.children[0].body.velocity.x > 0) { // Les plataformes van cap a la dreta
 		for (let i = 0; i < platforms.children.length; i++) {
-			if (platforms.children[i].position.x > 600) {
+			if (platforms.children[i].position.x > game.width) {
 				platforms.children[i].position.x -= 8 * PLATFORM_WIDTH;
 			}
 		}
 
 		for(let i = 0; i < obstacles.children.length; i++) {
-			if (obstacles.children[i].position.x > 600) {
+			if (obstacles.children[i].position.x > game.width) {
 				obstacles.children[i].position.x -= 8 * PLATFORM_WIDTH;
 			}
 		}
@@ -334,10 +349,13 @@ function generateLevel() {
 
 	platforms = game.add.group(); // Afegim un grup plataformes
 	obstacles = game.add.group();
+	enemies = game.add.group();
 	game.physics.arcade.enable(platforms);
 	game.physics.arcade.enable(obstacles);
+	game.physics.arcade.enable(enemies);
 	platforms.enableBody = true; // A ixe grup li habilitem el body per a les colisions
 	obstacles.enableBody = true;
+	enemies.enableBody = true;
 
 	lifeSprites = game.add.group();
 
@@ -365,6 +383,8 @@ function generateLevel() {
 				addCube(cubeX, cubeY, cubeScale, 'grass', 'letter'); //#C Se pot easily canviar la skin de este cube
 			} else if (cubeType == 7) {
 				addCube(cubeX, cubeY, cubeScale, 'grass', 'spring');
+			} else if (cubeType == 8) {
+				addCube(cubeX, cubeY, cubeScale, 'grass', 'spikeMan');
 			}
 		}
 	}
@@ -414,6 +434,16 @@ function addCube(x, y, cubeScale, platformType, extra) {
 		spring.body.checkCollision.down = false;
 		cube.type += '_spring';
 
+	} else if (extra == 'spikeMan') {
+		let spikeMan = obstacles.create(x + PLATFORM_WIDTH / 2 , y, 'spikeMan_stand');
+		spikeMan.type = 'spikeMan'
+		spikeMan.scale.setTo(cubeScale, cubeScale);
+		spikeMan.anchor.setTo(0.5, 1);
+		spikeMan.body.immovable = true;
+		spikeMan.body.checkCollision.down = false;
+		cube.type += '_spikeMan';
+
+		//enemies.add(spikeMan)
 	}
 
 }
@@ -478,7 +508,9 @@ function loadImages() {
 	game.load.image('life', 'assets/objects/life.png');
 	game.load.image('carrot', 'assets/objects/carrot.png')
 	game.load.image('spring', 'assets/objects/spring.png')
-
+	game.load.image('spikeMan_stand', 'assets/objects/spikeMan_stand.png')
+	game.load.image('spikeMan_walk1', 'assets/objects/spikeMan_walk1.png')
+	game.load.image('spikeMan_walk2', 'assets/objects/spikeMan_walk2.png')
 
 
 
