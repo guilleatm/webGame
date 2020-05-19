@@ -23,7 +23,7 @@ const DEFAULT_VEL = PLAYER_GRAVITY * 0.55, DESTRUCTION_VEL = DEFAULT_VEL * 2.5, 
 const NUM_LEVELS = 6;
 const POWERUP_DURATION = 4;
 const SPRING_IMPULSE = 1500; // 1500 = 3 pisos
-const ENEMIE_VELOCITY = 100;
+const ENEMIE_VELOCITY = 150;
 
 function preloadGame() {
 	loadSprites();
@@ -62,6 +62,8 @@ function onPlatformCollide(player, cube) { // Se crida cuan els objectes ja han 
 		win();
 		return;
 	}	
+
+	updateEnemies();
 	game.add.audio('jumpSnd').play();
 }
 
@@ -103,7 +105,9 @@ function onObstacleCollide(player, obstacle) {
 		onSpringCollision(player, obstacle)
 
 	} else if (obstacle.type == 'cactus') {
-		onCactusCollision(player, obstacle)
+		onCactusCollision(player, obstacle);
+	} else if (obstacle.type == 'flyMan') {
+		onFlyManCollision(player, obstacle);
 	}
 	
 }
@@ -112,6 +116,7 @@ function onCactusCollision(player, obstacle) {
 	if (lifes > 1) {
 		game.add.audio('hitSnd').play();
 		player.body.velocity.x = 0;
+		player.body.velocity.y = 70;
 		destroyObstacle(obstacle);
 		lifeSprites.children[--lifes].destroy();
 	} else {
@@ -123,17 +128,50 @@ function onCactusCollision(player, obstacle) {
 	}
 }
 
+function onFlyManCollision(player, obstacle) {
+	if (lifes > 1) {
+		game.add.audio('hitSnd').play();
+		player.body.velocity.x = 0;
+		player.body.velocity.y = 70;
+		destroyObstacle(obstacle);
+		lifeSprites.children[--lifes].destroy();
+	} else {
+		
+		player.children[0].visible = true;
+		player.children[1].visible = true;
+		game.add.audio('explosionSnd').play();
+		player.children[1].animations.play('bye'); //#C Si bunny per raere de la explosió		
+	}
+}
+
+
+
 function onSpringCollision(player, obstacle) {
 	player.body.velocity.y = -SPRING_IMPULSE;
 	//animacions spring(obstacle)
 }
 
 
-function updateEnemie(e) {
+function updateEnemies() {
 
-	if (Math.abs(player.body.y - e.body.y) < game.height / 2) {
-		e.body.velocity.x += ENEMIE_VELOCITY;
+	for (let i = 0; i < obstacles.children.length; i++) {
+		let e = obstacles.children[i];
+		if (e.type == 'flyMan') {
+			if (Math.abs(player.body.y - e.body.y) < game.height / 2 && e.vel == 0) {
+				let v = Math.random() * 2 - 1;
+
+				e.vel = ENEMIE_VELOCITY * v;
+				e.body.velocity.x += e.vel
+				e.animations.play('fly');
+
+				if (v < 0) {
+					e.scale.setTo(-e.scale.x, e.scale.y)
+				}
+			}
+		}
 	}
+
+	
 
 }
 
@@ -180,9 +218,13 @@ function manageInput() {
 
 
 		for (let i = 0; i < obstacles.children.length; i++) {
-			obstacles.children[i].body.velocity.x = vel;
-			if (obstacles.children[i].type == 'spikeMan')
-				updateEnemie(obstacles.children[i]);
+			let e = obstacles.children[i];
+
+			if (e.type == 'flyMan') {
+				e.body.velocity.x = vel + e.vel;
+			} else {
+				e.body.velocity.x = vel;
+			}
 		}
 	}
 
@@ -324,7 +366,7 @@ function createPlayer() {
 	game.camera.follow(player);
 
 	let explosionAnimation = game.make.sprite(0, 0, 'explosionAnimation');
-		explosionAnimation.animations.add('bye', [0,1,2,3,4], 6, false);		
+		explosionAnimation.animations.add('bye', [0,1,2,3,4], 6, false);
 		explosionAnimation.anchor.setTo(0.5, 0.5);
 		explosionAnimation.scale.setTo(1.5, 1.5);
 		explosionAnimation.visible = false;
@@ -384,7 +426,7 @@ function generateLevel() {
 			} else if (cubeType == 7) {
 				addCube(cubeX, cubeY, cubeScale, 'grass', 'spring');
 			} else if (cubeType == 8) {
-				addCube(cubeX, cubeY, cubeScale, 'grass', 'spikeMan');
+				addCube(cubeX, cubeY, cubeScale, 'grass', 'flyMan');
 			}
 		}
 	}
@@ -434,16 +476,18 @@ function addCube(x, y, cubeScale, platformType, extra) {
 		spring.body.checkCollision.down = false;
 		cube.type += '_spring';
 
-	} else if (extra == 'spikeMan') {
-		let spikeMan = obstacles.create(x + PLATFORM_WIDTH / 2 , y, 'spikeMan_stand');
-		spikeMan.type = 'spikeMan'
-		spikeMan.scale.setTo(cubeScale, cubeScale);
-		spikeMan.anchor.setTo(0.5, 1);
-		spikeMan.body.immovable = true;
-		spikeMan.body.checkCollision.down = false;
-		cube.type += '_spikeMan';
-
-		//enemies.add(spikeMan)
+	} else if (extra == 'flyMan') {
+		let flyMan = obstacles.create(x + PLATFORM_WIDTH / 2 , y, 'flyManAnimation');
+		flyMan.animations.add('stand', [0], 10 , false);
+		flyMan.animations.add('fly', [1], 10, false);
+		flyMan.animations.play('stand');
+		flyMan.type = 'flyMan'
+		flyMan.scale.setTo(cubeScale, cubeScale);
+		flyMan.anchor.setTo(0.5, 1);
+		flyMan.body.immovable = true;
+		flyMan.body.checkCollision.down = false;
+		flyMan.vel = 0;
+		cube.type += '_flyMan';
 	}
 
 }
@@ -495,6 +539,7 @@ function loadSprites() {
 
 	game.load.spritesheet('explosionAnimation', 'assets/player/spritesheetExplosion.png', 192 , 192, 7);
 	game.load.spritesheet('playerAnimation', 'assets/player/playerAnimation.png', 120, 207, 2);
+	game.load.spritesheet('flyManAnimation', 'assets/objects/flyMan.png', 130, 148, 2)
 
 	// game.load.spritesheet('collector', 'assets/imgs/dude.png', 32, 48); // #c
 	// game.load.spritesheet('enemy', 'assets/imgs/enemySprite.png', 55, 53, 15);
@@ -508,9 +553,9 @@ function loadImages() {
 	game.load.image('life', 'assets/objects/life.png');
 	game.load.image('carrot', 'assets/objects/carrot.png')
 	game.load.image('spring', 'assets/objects/spring.png')
-	game.load.image('spikeMan_stand', 'assets/objects/spikeMan_stand.png')
-	game.load.image('spikeMan_walk1', 'assets/objects/spikeMan_walk1.png')
-	game.load.image('spikeMan_walk2', 'assets/objects/spikeMan_walk2.png')
+
+
+	
 
 
 
