@@ -181,7 +181,7 @@ function win() {
 		lifes = 3
 		game.state.start('game', gameState);
 	} else {
-		game.state.start('levelSelector', levelSelectorState);
+		game.state.start('about', aboutState);
 	}
 
 }
