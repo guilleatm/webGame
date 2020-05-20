@@ -407,26 +407,39 @@ function generateLevel() {
 	for (let nFloor = 0; nFloor < levelConf.data.length; nFloor++) {
 		for (let nCube = 0; nCube < levelConf.data[nFloor].length; nCube++) {
 
-			let cubeType = levelConf.data[nFloor][nCube];
+			let cubeExists = levelConf.data[nFloor][nCube];
 			let cubeX = PLATFORM_WIDTH * nCube;
 			let cubeY = INITIAL_PLATFORM_Y + PLATFORM_GAP * nFloor;
 
-			if (cubeType == 1) { // Plataforma normal
+			if (cubeExists == 1 && Math.random() > 0.5) { //Hay una probabilidad de 0.5 de que toque un bloque especial
+
+				switch (Math.floor(Math.random() * 7)) {
+					case 1:
+						addCube(cubeX, cubeY, cubeScale, 'grass', 'cactus');
+						break;
+					case 2:
+						addCube(cubeX, cubeY, cubeScale, 'grass_broken');
+						break;
+					case 3:
+						addCube(cubeX, cubeY, cubeScale, 'grass', 'carrot');
+						break;
+					case 4:
+						addCube(cubeX, cubeY, cubeScale, 'grass', 'letter');
+						break;
+					case 5:
+						addCube(cubeX, cubeY, cubeScale, 'grass', 'spring');
+						break;
+					case 6:
+						addCube(cubeX, cubeY, cubeScale, 'grass', 'flyMan');
+						break;
+					default:
+						addCube(cubeX, cubeY, cubeScale, 'grass');
+						break;
+				}
+			} else if(cubeExists == 1) {
 				addCube(cubeX, cubeY, cubeScale, 'grass');
-			} else if (cubeType == 2) { // Plataforma en cactus
-				addCube(cubeX, cubeY, cubeScale, 'grass', 'cactus');
-			} else if (cubeType == 3) { // Plataforma final
+			} else if (cubeExists == 3) {
 				addCube(cubeX, cubeY, cubeScale, 'stone');
-			} else if (cubeType == 4) {
-				addCube(cubeX, cubeY, cubeScale, 'grass_broken');
-			} else if (cubeType == 5) {
-				addCube(cubeX, cubeY, cubeScale, 'grass', 'carrot');
-			} else if (cubeType == 6) {
-				addCube(cubeX, cubeY, cubeScale, 'grass', 'letter'); //#C Se pot easily canviar la skin de este cube
-			} else if (cubeType == 7) {
-				addCube(cubeX, cubeY, cubeScale, 'grass', 'spring');
-			} else if (cubeType == 8) {
-				addCube(cubeX, cubeY, cubeScale, 'grass', 'flyMan');
 			}
 		}
 	}
@@ -553,6 +566,8 @@ function loadImages() {
 	game.load.image('life', 'assets/objects/life.png');
 	game.load.image('carrot', 'assets/objects/carrot.png')
 	game.load.image('spring', 'assets/objects/spring.png')
+	game.load.image('carrot_gold', 'assets/objects/carrot_gold.png')
+
 
 
 	
