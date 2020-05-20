@@ -177,7 +177,7 @@ function updateEnemies() {
 
 function win() {
 	game.sound.stopAll();
-	if (levelToPlay++ <= NUM_LEVELS) {
+	if (levelToPlay++ < NUM_LEVELS) {
 		lifes = 3
 		game.state.start('game', gameState);
 	} else {
@@ -201,6 +201,12 @@ function destroyObstacle(obstacle) {
 function destroyCube(cube) {
 	cube.visible = false;
 	cube.body.enable = false;
+}
+
+function destroyCubeLetter(cube) {
+	let vanishBlock = game.add.tween(cube).to({alpha: 0}, 500, Phaser.Easing.Linear.None);
+	vanishBlock.start();
+	cube.body.enable = false;	
 }
 
 function manageInput() {
@@ -311,7 +317,7 @@ function gameScreenOnDown() {
 	for (let i = 0; i < platforms.children.length; i++) {
 		let platformType = platforms.children[i].type;
 		if (platformType.substring(0, 12) == 'grass_letter' && platformType.substring(13, 14).toLowerCase() == keyPressed) {
-			destroyCube(platforms.children[i]);
+			destroyCubeLetter(platforms.children[i]);
 		}
 	}
 }
