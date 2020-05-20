@@ -10,7 +10,7 @@ let platforms, obstacles, enemies;
 let levelConf;
 let remainingFloors;
 let remainingFloorsText;
-let currentPowerup, powerupIcon;
+let currentPowerup, powerupIcon, extraLife;
 let lifeSprites;
 let lastVel;
 
@@ -50,12 +50,17 @@ function onPlatformCollide(player, cube) { // Se crida cuan els objectes ja han 
 	remainingFloors = levelConf.data.length - calculateCurrentFloor(cube.position.y) - 1;	
 	updateText();
 
-	if (cube.type == 'grass_carrot') {
+	if (cube.type == 'grass_carrotgold') {
 		game.add.audio('carrotSnd').play();
 		cube.children[0].kill();
 		currentPowerup = POWERUP_DURATION;
 		powerupIcon.visible = true;
 
+	} else if (cube.type == 'grass_carrot') {
+		game.add.audio('carrotSnd').play();
+		cube.children[0].kill();
+
+		extraLife.visible = true;
 	}
 
 	if (cube.type == 'stone') {
@@ -113,12 +118,15 @@ function onObstacleCollide(player, obstacle) {
 }
 
 function onCactusCollision(player, obstacle) {
-	if (lifes > 1) {
+	if (lifes > 1 || extraLife.visible) {
 		game.add.audio('hitSnd').play();
 		player.body.velocity.x = 0;
 		player.body.velocity.y = 70;
 		destroyObstacle(obstacle);
-		lifeSprites.children[--lifes].destroy();
+		if (extraLife.visible)
+			extraLife.visible = false;
+		else
+			lifeSprites.children[--lifes].destroy();
 	} else {
 		
 		player.children[0].visible = true;
@@ -129,12 +137,15 @@ function onCactusCollision(player, obstacle) {
 }
 
 function onFlyManCollision(player, obstacle) {
-	if (lifes > 1) {
+	if (lifes > 1 || extraLife.visible) {
 		game.add.audio('hitSnd').play();
 		player.body.velocity.x = 0;
 		player.body.velocity.y = 70;
 		destroyObstacle(obstacle);
-		lifeSprites.children[--lifes].destroy();
+		if (extraLife.visible)
+			extraLife.visible = false;
+		else
+			lifeSprites.children[--lifes].destroy();
 	} else {
 		
 		player.children[0].visible = true;
@@ -147,8 +158,8 @@ function onFlyManCollision(player, obstacle) {
 
 
 function onSpringCollision(player, obstacle) {
-	player.body.velocity.y = -SPRING_IMPULSE;
-	//animacions spring(obstacle)
+	player.body.velocity.y = -SPRING_IMPULSE;	
+	obstacle.animations.play('used');
 }
 
 
@@ -419,7 +430,7 @@ function generateLevel() {
 
 			if (cubeExists == 1 && Math.random() > 0.5) { //Hay una probabilidad de 0.5 de que toque un bloque especial
 
-				switch (Math.floor(Math.random() * 7)) {
+				switch (Math.floor(Math.random() * 8)) {
 					case 1:
 						addCube(cubeX, cubeY, cubeScale, 'grass', 'cactus');
 						break;
@@ -437,6 +448,9 @@ function generateLevel() {
 						break;
 					case 6:
 						addCube(cubeX, cubeY, cubeScale, 'grass', 'flyMan');
+						break;
+					case 7:
+						addCube(cubeX, cubeY, cubeScale, 'grass', 'carrotgold');
 						break;
 					default:
 						addCube(cubeX, cubeY, cubeScale, 'grass');
@@ -470,12 +484,20 @@ function addCube(x, y, cubeScale, platformType, extra) {
 		cactus.body.immovable = true;
 		cactus.body.checkCollision.down = false;
 		cube.type += '_cactus';
+	} else if (extra == 'carrotgold') {
+		let carrotgold = game.make.sprite(PLATFORM_WIDTH * 0.8, -10, 'carrot_gold');
+		carrotgold.anchor.setTo(0.5, 1);
+
+		cube.addChild(carrotgold);
+		cube.type += '_carrotgold';
+
 	} else if (extra == 'carrot') {
 		let carrot = game.make.sprite(PLATFORM_WIDTH * 0.8, -10, 'carrot');
 		carrot.anchor.setTo(0.5, 1);
 
 		cube.addChild(carrot);
 		cube.type += '_carrot';
+
 
 	} else if (extra == 'letter') {
 
@@ -487,8 +509,11 @@ function addCube(x, y, cubeScale, platformType, extra) {
 		cube.addChild(cubeLetter);
 		cube.type += '_letter_' + char;
 	} else if (extra == 'spring') {
-		let spring = obstacles.create(x + PLATFORM_WIDTH / 2 , y, 'spring');
-		spring.type = 'spring'
+		let spring = obstacles.create(x + PLATFORM_WIDTH / 2 , y, 'springAnimation');
+		spring.animations.add('unused', [0], 10, false);
+		spring.animations.add('used', [1], 10, false);
+		spring.animations.play('unused');
+		spring.type = 'spring';
 		spring.scale.setTo(cubeScale, cubeScale);
 		spring.anchor.setTo(0.5, 1);
 		spring.body.immovable = true;
@@ -542,11 +567,16 @@ function createHUD() {
 		lifeSprite.fixedToCamera = true;
 	}
 
-	powerupIcon = game.add.sprite(game.width - 200 , 30, 'carrot');
+	powerupIcon = game.add.sprite(game.width - 250 , 30, 'carrot_gold');
 	powerupIcon.visible = false;
 	powerupIcon.scale.setTo(0.8, 0.8);
 	powerupIcon.fixedToCamera = true;
 
+
+	extraLife = game.add.sprite(game.width - 180 , 30, 'carrot');
+	extraLife.visible = false;
+	extraLife.scale.setTo(0.8, 0.8);
+	extraLife.fixedToCamera = true;
 }
 
 
@@ -558,7 +588,8 @@ function loadSprites() {
 
 	game.load.spritesheet('explosionAnimation', 'assets/player/spritesheetExplosion.png', 192 , 192, 7);
 	game.load.spritesheet('playerAnimation', 'assets/player/playerAnimation.png', 120, 207, 2);
-	game.load.spritesheet('flyManAnimation', 'assets/objects/flyMan.png', 130, 148, 2)
+	game.load.spritesheet('flyManAnimation', 'assets/objects/flyMan.png', 130, 148, 2);
+	game.load.spritesheet('springAnimation', 'assets/objects/springAnimation.png', 145, 110, 2);
 
 	// game.load.spritesheet('collector', 'assets/imgs/dude.png', 32, 48); // #c
 	// game.load.spritesheet('enemy', 'assets/imgs/enemySprite.png', 55, 53, 15);
@@ -571,7 +602,7 @@ function loadImages() {
 	game.load.image('cactus', 'assets/objects/cactus.png');
 	game.load.image('life', 'assets/objects/life.png');
 	game.load.image('carrot', 'assets/objects/carrot.png')
-	game.load.image('spring', 'assets/objects/spring.png')
+	//game.load.image('spring', 'assets/objects/spring.png')
 	game.load.image('carrot_gold', 'assets/objects/carrot_gold.png')
 
 
