@@ -594,8 +594,6 @@ function loadSprites() {
 	game.load.spritesheet('flyManAnimation', 'assets/objects/flyMan.png', 130, 148, 2);
 	game.load.spritesheet('springAnimation', 'assets/objects/springAnimation.png', 145, 110, 2);
 
-	// game.load.spritesheet('collector', 'assets/imgs/dude.png', 32, 48); // #c
-	// game.load.spritesheet('enemy', 'assets/imgs/enemySprite.png', 55, 53, 15);
 }
 
 function loadImages() {
@@ -605,22 +603,12 @@ function loadImages() {
 	game.load.image('cactus', 'assets/objects/cactus.png');
 	game.load.image('life', 'assets/objects/life.png');
 	game.load.image('carrot', 'assets/objects/carrot.png')
-	//game.load.image('spring', 'assets/objects/spring.png')
 	game.load.image('carrot_gold', 'assets/objects/carrot_gold.png')
 
 
 
-	
-
-
-
 	game.load.image('bgGame', 'assets/backgrounds/infiniteBg.jpg');
-	// game.load.image('exit', 'assets/imgs/exit.png');
-	// game.load.image('star', 'assets/imgs/star.png');
-	// game.load.image('aid', 'assets/imgs/firstaid.png');
-	// game.load.image('healthHolder', 'assets/imgs/health_holder.png');
-	// game.load.image('healthBar', 'assets/imgs/health_bar.png');
-	// game.load.image('heart', 'assets/imgs/heart.png');
+
 }
 
 function loadSounds() {

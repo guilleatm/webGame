@@ -15,7 +15,7 @@ function preloadMenu() {
     game.load.image('aboutButton', 'assets/buttons/moreButton.png');
     game.load.image('configButton', 'assets/buttons/settingButton.png');
     game.load.image('playButton', 'assets/buttons/playButton.png');
-    game.load.image('bgButtons', 'assets/backgrounds/Elements/PNG/Default/towerAlt.png');
+    game.load.image('bgButtons', 'assets/backgrounds/towerAlt.png');
     game.load.image('mainButton', 'assets/buttons/mainButton.png');
     game.load.image('lvlButton', 'assets/buttons/lvlSelector.png');
     game.load.image('rabbit', 'assets/player/bunny1_ready.png');
