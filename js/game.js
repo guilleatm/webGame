@@ -17,6 +17,7 @@ let lastVel;
 const INITIAL_PLAYER_Y = 50, INITIAL_PLATFORM_Y = 400;
 const PLATFORM_GAP = 300;
 const PLATFORM_VEL = 250;
+const PLATFORM_VEL_INCREMENT = 20;
 const PLATFORM_WIDTH = 600 / 6; // El 600 es perq es el game.width
 const PLAYER_GRAVITY = 1000;
 const DEFAULT_VEL = PLAYER_GRAVITY * 0.55, DESTRUCTION_VEL = DEFAULT_VEL * 2.5, ON_DESTRUCTION_LOST_VEL = DEFAULT_VEL * 1.2;
@@ -42,6 +43,8 @@ function updateGame() {
 
 	game.physics.arcade.collide(player, platforms, onPlatformCollide, onPlatformProcess, this);
 	game.physics.arcade.collide(player, obstacles, onObstacleCollide, onObstacleProcess, this);
+
+	animPlayer();
 }
 
 function onPlatformCollide(player, cube) { // Se crida cuan els objectes ja han xocat
@@ -106,6 +109,8 @@ function onPlatformProcess(player, cube) { // Se crida antes de que xoquen, per 
 
 function onObstacleCollide(player, obstacle) {
 
+	player.body.velocity.x = 0;
+
 	if (obstacle.type == 'spring') {
 		onSpringCollision(player, obstacle)
 
@@ -163,6 +168,14 @@ function onSpringCollision(player, obstacle) {
 }
 
 
+function animPlayer() {
+	if (player.body.velocity.y > 160) {
+		player.animations.play('stand')
+	} else {
+		player.animations.play('jump')
+	}
+}
+
 function updateEnemies() {
 
 	for (let i = 0; i < obstacles.children.length; i++) {
@@ -182,14 +195,13 @@ function updateEnemies() {
 		}
 	}
 
-	
-
 }
 
 function win() {
 	game.sound.stopAll();
 	if (levelToPlay++ < NUM_LEVELS) {
-		lifes = 3
+		lifes = 3;
+		currentPowerup = 0;
 		game.state.start('game', gameState);
 	} else {
 		game.state.start('about', aboutState);
@@ -199,7 +211,7 @@ function win() {
 
 function onObstacleProcess(player, obstacle) {
 	if (currentPowerup > 0) {
-		destroyObstacle(obstacle)
+		destroyObstacle(obstacle);
 		return false;
 	}
 }
@@ -222,14 +234,26 @@ function destroyCubeLetter(cube) {
 
 function manageInput() {
 
-
 	let vel = 0;
-	if (controls.right.isDown)
-		vel = -PLATFORM_VEL;
-	else if (controls.left.isDown)
-		vel = PLATFORM_VEL;
+	let mouseX = game.input.mousePointer.x;
 
-	if (vel != lastVel) { // optimització
+	//mouse
+	if (!game.input.mousePointer.withinGame) {
+		//keys
+		if (controls.right.isDown)
+			vel = -PLATFORM_VEL - levelToPlay * PLATFORM_VEL_INCREMENT;
+		else if (controls.left.isDown)
+			vel = PLATFORM_VEL + levelToPlay * PLATFORM_VEL_INCREMENT;
+
+	} else if (mouseX < game.width / 2) {
+		vel = PLATFORM_VEL + levelToPlay * PLATFORM_VEL_INCREMENT;
+	} else if (mouseX > game.width / 2) {
+		vel = -PLATFORM_VEL - levelToPlay * PLATFORM_VEL_INCREMENT;
+		
+	}
+	
+
+	if (vel != lastVel) { // optimitzación
 		for (let i = 0; i < platforms.children.length; i++)
 			platforms.children[i].body.velocity.x = vel;
 
@@ -247,35 +271,6 @@ function manageInput() {
 
 	lastVel = vel;
 
-
-	
-	
-
-	//mouse move
-
-	// if (game.input.mousePointer.x > game.width / 2) //Dreta
-	// {
-	// 	for (let i = 0; i < platforms.children.length; i++)
-	// 		platforms.children[i].body.velocity.x = PLATFORM_VEL;
-
-	// 	for (let i = 0; i < obstacles.children.length; i++)
-	// 		obstacles.children[i].body.velocity.x = PLATFORM_VEL;
-	// }
-
-	// else if (game.input.mousePointer.x < game.width / 2) { // Esquerra
-	// 	for (let i = 0; i < platforms.children.length; i++)
-	// 		platforms.children[i].body.velocity.x = PLATFORM_VEL;
-
-	// 	for (let i = 0; i < obstacles.children.length; i++)
-	// 		obstacles.children[i].body.velocity.x = PLATFORM_VEL;
-
-	// } else { // Quet
-	// 	for (let i = 0; i < platforms.children.length; i++)
-	// 		platforms.children[i].body.velocity.x = 0;
-
-	// 	for (let i = 0; i < obstacles.children.length; i++)
-	// 		obstacles.children[i].body.velocity.x = 0;
-	// }
 }
 
 function managePlatformsPosition() {
@@ -430,7 +425,15 @@ function generateLevel() {
 
 			if (cubeExists == 1 && Math.random() > 0.5) { //Hay una probabilidad de 0.5 de que toque un bloque especial
 
-				switch (Math.floor(Math.random() * 8)) {
+			let nObstacles;
+
+			if (levelToPlay > 1) {
+				nObstacles = Math.floor(Math.random() * 8)
+			} else {
+				nObstacles = Math.floor(Math.random() * 5)
+			}
+
+				switch (nObstacles) {
 					case 1:
 						addCube(cubeX, cubeY, cubeScale, 'grass', 'cactus');
 						break;
@@ -441,10 +444,10 @@ function generateLevel() {
 						addCube(cubeX, cubeY, cubeScale, 'grass', 'carrot');
 						break;
 					case 4:
-						addCube(cubeX, cubeY, cubeScale, 'grass', 'letter');
+						addCube(cubeX, cubeY, cubeScale, 'grass', 'spring');
 						break;
 					case 5:
-						addCube(cubeX, cubeY, cubeScale, 'grass', 'spring');
+						addCube(cubeX, cubeY, cubeScale, 'grass', 'letter');
 						break;
 					case 6:
 						addCube(cubeX, cubeY, cubeScale, 'grass', 'flyMan');

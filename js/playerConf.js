@@ -59,10 +59,10 @@ function createPlayerConf() {
 
 
 	suggestedNames = [
-		"Dr. Ogadicto", "Juanra Bosucio", "Kepa Jamecho",
+		"Dr. Ogadicto", "Juanra Jamecho", "Kepa Bosucio",
 		"Oskarini", "William Williamson", "Pakito el Chokolatero",
-		"Undefined Undefindini", "JSON Returns", "I Love this Game",
-		"Queremos un 10 :)"
+		"Undefineeed", "JSON Returns", "Löve2D",
+		"This deserves a 10 :)"
 	]; // Si poses més noms ni ha que modificar el Math.random() (+- linea 68)
 
 	if (playerName != undefined) {

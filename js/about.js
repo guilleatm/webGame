@@ -17,7 +17,7 @@ function loadAboutAssets() {
 function showInstructions() {
     game.add.image(-20, -100, 'bg2');
 
-    let textTitle = 'More Screen';
+    let textTitle = 'More';
     let styleTitle = {
         font: 'Brightly',
         fontSize: '40pt',
@@ -59,12 +59,8 @@ function showInstructions() {
     author = game.add.text(175, game.height / 6 + 160, 'Óscar Silvestre Payá',
         styleSingleAuthor);
     authors.add(author);
-    author = game.add.text(game.width / 2 - 20, game.height / 6 + 210, '??',
-        styleSingleAuthor);
-    authors.add(author);
 
-    let instructions = 'Short description of the game and credits (names of team and team members) ';
-    instructions += '.... ';
+    let instructions = 'Hope you like the game :)';
     
 
     let instrucText = game.add.text(0, 0, instructions, {
